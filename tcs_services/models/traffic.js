@@ -6,7 +6,8 @@ var mongoose = require("mongoose");
 
 var TrafficSchema = new mongoose.Schema({
     date: { type: String },
-    time: { type: String}
+    time: { type: String},
+    tics: {type: String}
 }, { collection: 'traffic' });
 
 var TrafficModel = mongoose.model('traffic', TrafficSchema);

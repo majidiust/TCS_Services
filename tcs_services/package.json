@@ -22,6 +22,8 @@
         "bcrypt-nodejs":"0.0.3",
         "socket.io":"*",
         "ws":"*",
-        "blueimp-file-upload-expressjs":"*"
+        "blueimp-file-upload-expressjs":"*",
+        "node-dir":"*",
+        "moment-jalaali":"*"
     }
 }

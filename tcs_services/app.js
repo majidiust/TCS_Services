@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var users = require('./routes/users');
 var index = require('./routes/index');
 var settings = require('./routes/settings');
+var traffic = require('./routes/traffic');
 var connectionString = 'mongodb://192.168.88.128:27017/KIG';
 var mongoose   = require('mongoose');
 mongoose.connect(connectionString); // connect to our database
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
 app.use('/api', users);
 app.use('/', index);
 app.use('/settings', settings);
+app.use('/traffic', traffic);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
