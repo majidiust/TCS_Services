@@ -53,6 +53,6 @@ function setSettings(req, res){
 }
 
 module.exports = router;
-router.route('/getSettings').get(AuthControl.requireAuthentication, getSettings);
+router.route('/getSettings').get( getSettings);
 router.route('/setSettings').post(AuthControl.requireAuthentication, setSettings);
 
