@@ -24,6 +24,14 @@
     <meta name="MobileOptimized" content="320">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <!-- Additional styles -->
+    <link rel="stylesheet" href="css/styles/form3860.css?v=1">
+    <link rel="stylesheet" href="css/styles/modal3860.css?v=1">
+    <link rel="stylesheet" href="css/styles/progress-slider3860.css?v=1">
+    <link rel="stylesheet" href="css/styles/switches3860.css?v=1">
+    <link rel="stylesheet" href="css/styles/table3860.css?v=1">
+    <link rel="stylesheet" href="css/kss.css">
+
     <!-- For all browsers -->
     <link rel="stylesheet" href="css/reset3860.css?v=1">
     <link rel="stylesheet" href="css/style3860.css?v=1">
@@ -44,17 +52,6 @@
 
     <!-- Webfonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-
-    <!-- Additional styles -->
-    <link rel="stylesheet" href="css/styles/form3860.css?v=1">
-    <link rel="stylesheet" href="css/styles/switches3860.css?v=1">
-
-    <!-- glDatePicker -->
-    <link rel="stylesheet" href="js/libs/glDatePicker/developr3860.css?v=1">
-
-    <!-- jQuery Form Validation -->
-    <link rel="stylesheet" href="js/libs/formValidator/developr.validationEngine3860.css?v=1">
-
 
     <!-- Additional styles -->
     <link rel="stylesheet" href="css/styles/progress-slider3860.css?v=1">
@@ -111,68 +108,120 @@
 <!-- Button to open/hide shortcuts -->
 <a href="javascript:void(0);" id="open-shortcuts"><span class="icon-thumbs"></span></a>
 
-<!-- Main content -->
 <section role="main" id="main">
-
+<center>
     <noscript class="message black-gradient simpler">مرورگر شما از این نسخه از جاوا اسکریپت پیروی نمیکند. ممکن است بعضی
         از قابلیت ها کار نکند.
     </noscript>
-    <div class="with-padding">
-        <br/>
+    <div class="with-padding" style="margin-top:50px;">
 
 
-        <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+    <div class="columns">
+
+		<div class="box-layout four-columns twelve-columns-tablet" style="height:400px;">
+		    
+		    <p style="text-align:center;margin-top:10px;">
+			    اطلاعات آخرین تردد
+		    </p>
+		    
+		<hr/>
+
+		    <table style="width:80%;direction:rtl;line-height:30px;">
+			<tr>
+			    <td>
+				تاریخ تردد
+			    </td>
+			    <td id="lastTrafficDate">
+			    </td>
+			    
+			</tr>
+			    <tr>
+			    <td>
+				زمان تردد
+			    </td>
+			    <td id="lastTrafficTime">
+			    </td>
+			    
+			</tr>
+				<tr>
+				<td>
+					پلاک تشخیص داده شده
+				</td>
+				<td id="detectedPlate">
+				</td>
+			    </tr>
+<tr>
+				<td colaspan = "2">
+				<hr/>	
+				</td>
+			    </tr>
+			    <tr>
+				<td>
+				     <label for="input-3" class="label">نام</label>
+				</td>
+				<td>
+				     <input type="text" name="firstName" id="firstName" size="9" class="input full-width" value="">
+				</td>
+			    </tr>
+
+			    <tr>
+				<td>
+				     <label for="input-3" class="label">نام خانوادگی</label>
+				</td>
+				<td>
+				     <input type="text" name="lastName" id="lastName" size="9" class="input full-width" value="">
+				</td>
+			    </tr>
 
 
-            <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
-                <legend class="legend">تنظیمات</legend>
+			    <tr>
+				<td>
+				     <label for="input-3" class="label">کدملی</label>
+				</td>
+				<td>
+				     <input type="text" name="nationalityCode" id="nationalityCode" size="9" class="input full-width" value="">
+				</td>
+			    </tr>
+			    <tr><td colspan="2"><hr/></td></tr>
 
+			    <tr>
+				<td colspan="2" style="text-align:center;">
+					<button class="button green-gradient" style="font-family: Tahoma; font-size: 12px; width: 50%;" onclick="saveDetails();">ثبت</button>
+				</td>
+			    </tr>
+			    </tr>
+<tr>
+				<td colaspan = "2">
+				<hr/>	
+				</td>
+			    </tr>
+			    <tr>
+				<td style="text-align:center;">
+					<button class="button red-gradient" style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="nextImage();">تصویر بعدی</button>
+				</td>
+				<td style="text-align:center;">
+					<button class="button blue-gradient" style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="saveDetails();">تمامی ترددها</button>
+				</td>
+			    </tr>
 
+		    </table>
+		</div>
 
-                <p class="button-height inline-label">
-                    <label for="input-3" class="label">آدرس دوربین</label>
-                    <input type="text" name="input-3" id="input-3" size="9" class="input full-width"
-                           value="">
-                </p>
+		<div class="box-layout eight-columns twelve-columns-tablet" style="height:400px">
+		<img id="lastTrafficImage" width="100%" height="100%" style="margin-bottm:10px;" />
+		</div>
 
-                <p class="button-height inline-label">
-                    <label for="input-4" class="label">فریم در ثانیه</label>
-                    <input type="text" name="input-4" id="input-4" size="9" class="input full-width"
-                           value="">
-                </p>
-
-                <p class="button-height inline-label">
-                    <label for="input-5" class="label">زمان صبر برای سریال</label>
-                    <input type="text" name="input-5" id="input-5" size="9" class="input full-width"
-                           value="">
-                </p>
-
-                <p class="button-height inline-label">
-                    <label for="input-6" class="label">تاخیر در توفق دوربین</label>
-                    <input type="text" name="input-6" id="input-6" size="9" class="input full-width"
-                           value="">
-                </p>
-
-                <hr/>
-
-                <div class="button-height"><button onclick="saveSettings();" type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات</button>
-                <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif" onclick="loadSettings();"/>
-                    بازیابی از سرور
-                    </button></div>
-
-
-
-            </fieldset>
-        </div>
+	    </div>
     </div>
+</center>
 </section>
 <!-- End main content -->
 
 <!-- Side tabs shortcuts -->
 <ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-    <li><a href="overview.html" class="shortcut-agenda" title="گزارش گیری">گزارش گیری</a></li>
+    <li class="current"><a href="overview.html" class="shortcut-agenda" title="گزارش گیری">گزارش گیری</a></li>
     <li><a href="main.html" class="shortcut-messages" title="رخدادها">رخدادها</a></li>
-    <li class="current"><a href="settings.html" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
+    <li><a href="settings.html" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
  <li><a href="dateReport.html" class="shortcut-contacts" title="براساس تاریخ">براساس تاریخ</a></li>
 </ul>
 
@@ -244,6 +293,8 @@
 <!-- Template functions -->
 <script src="js/developr.input.js"></script>
 <script src="js/developr.navigable.js"></script>
+<script src="js/developr.message.js"></script>
+<script src="js/developr.modal.js"></script>
 <script src="js/developr.notify.js"></script>
 <script src="js/developr.scroll.js"></script>
 <script src="js/developr.progress-slider.js"></script>
@@ -260,75 +311,136 @@
     $.template.init();
 
     $(document).ready(function () {
-        loadSettings();
-        // Color
-        $('#anthracite-inputs').change(function()
-        {
-            $('#main')[this.checked ? 'addClass' : 'removeClass']('black-inputs');
-        });
-
-        // Switches mode
-        $('#switch-mode').change(function()
-        {
-            $('#switch-wrapper')[this.checked ? 'addClass' : 'removeClass']('reversed-switches');
-        });
-
-        // Disabled switches
-        $('#switch-enable').change(function()
-        {
-            $('#disabled-switches').children()[this.checked ? 'enableInput' : 'disableInput']();
-        });
-
-        // Tooltip menu
-        $('#select-tooltip').menuTooltip($('#select-context').hide(), {
-            classes: ['no-padding']
-        });
-
-        // Form validation
-        $('form').validationEngine();
+	var qs = getQueryStrings();
+        var trafficId = qs["trafficId"];
+	console.log(trafficId);
+	LoadById(trafficId);
     });
-
-    function loadSettings(){
-        $.ajax({
+    
+    var images;
+	    var index= 0;
+var plate;
+    var recordI = recordId;
+    function loadImage(recordId){
+	recordI = recordId;
+     $.ajax({
             type: 'GET',
-            url: "/settings/getSettings",
+            url: "/traffic/getListOfImages/" + recordId,
             dataType: 'json',
             success: function (result) {
-                $("#input-3").val(result.RTSPUrl);
-                $("#input-4").val(result.FPS);
-                $("#input-5").val(result.ReTryOpenSerialPort);
-                $("#input-6").val(result.StopRTSPThr);
+		    images = result;
+		    $("#lastTrafficImage").prop("src", recordId + '/' + result[0]);
+		    //var img = '<img src="' + recordId + '/' + result[0]  + '" width="100%"/>'; 
             },
-            error: function(){},
-            async:true});
-    }
+            error: function () {
+            },
+            async: true});    
+}
 
-    function saveSettings(){
-        var data = {
-            RTSPUrl :  $("#input-3").val(),
-            FPS     :   $("#input-4").val(),
-            ReTryOpenSerialPort : $("#input-5").val(),
-            StopRTSPThr : $("#input-6").val()
-        };
-        console.log(data);
-        $.ajax({
-            type: 'POST',
-            url: "/settings/setSettings",
+    function LoadById(id){
+	 $.ajax({
+            type: 'GET',
+            url: "/traffic/getTrafficById/" + id,
             dataType: 'json',
-            data: data,
             success: function (result) {
-                $("#input-3").val(result.RTSPUrl);
-                $("#input-4").val(result.FPS);
-                $("#input-5").val(result.ReTryOpenSerialPort);
-                $("#input-6").val(result.StopRTSPThr);
+                var results = [];
+var d = "";
+	    var correctedPlate = result.persianPlate2;
+	    plate = correctedPlate;
+	    getProfile();
+	    if(correctedPlate && correctedPlate.length == 8)
+	    {
+		d = (correctedPlate[0]  + correctedPlate[1] +  correctedPlate[2]  +  correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " +correctedPlate[6] +  correctedPlate[7]);
+		d= '<div style="direction:rtl">' + d + '</div>';
+	    }
+		$("#lastTrafficDate").html(result.date);
+		$("#lastTrafficTime").html(result.time);
+		$("#detectedPlate").html(d);
+		loadImage(result._id);
+		walk(document.body, replaceNumbers);
             },
-            error: function(){
-
-                console.log("error in set settings");
+            error: function () {
             },
-            async:true});
+            async: false});
     }
 
+function getQueryStrings() {
+    var assoc = {};
+    var decode = function (s) {
+        return decodeURIComponent(s.replace(/\+/g, " "));
+    };
+    var queryString = location.search.substring(1);
+    var keyValues = queryString.split('&');
+
+    for (var i in keyValues) {
+        var key = keyValues[i].split('=');
+        if (key.length > 1) {
+            assoc[decode(key[0])] = decode(key[1]);
+        }
+    }
+
+    return assoc;
+}
+
+function walk(node, func) {
+    func(node);
+    node = node.firstChild;
+    while (node) {
+        walk(node, func);
+        node = node.nextSibling;
+    }
+};
+
+function replaceNumbers(node) {
+    if (node.nodeType == 3) //Text nodes only
+        node.nodeValue = node.nodeValue.replace(/[0-9]/g, getArabicNumber);
+}
+
+function getArabicNumber(n) {
+    return String.fromCharCode(1632 + parseInt(n, 10));
+}
+
+function nextImage(){
+    		    index++;
+		    if(index >= images.length)
+			index = 0;
+		    
+		    $("#lastTrafficImage").prop("src", recordI + '/' + images[index]);
+
+}
+
+function saveDetails(){
+    var firstName = $("#firstName").val();
+    var lastName = $("#lastName").val();
+    var nationalityCode = $("#nationalityCode").val();
+    console.log(firstName + " : " + lastName + " : " + nationalityCode);
+	 $.ajax({
+            type: 'GET',
+            url: "/traffic/saveProfile/" + firstName +"/" + lastName + "/" + nationalityCode + "/" + plate,
+            dataType: 'json',
+            success: function (result) {
+		//alert('saved');
+            },
+            error: function () {
+            },
+            async: false});
+    
+}
+
+function getProfile(){
+    $.ajax({
+            type: 'GET',
+            url: "/traffic/getProfile/" + plate,
+            dataType: 'json',
+            success: function (result) {
+		    $("#firstName").val(result.firstName);
+		    $("#lastName").val(result.lastName);
+		    $("#nationalityCode").val(result.nationalityCode);
+            },
+            error: function () {
+            },
+            async: false});
+}
 
 </script>
 </body>

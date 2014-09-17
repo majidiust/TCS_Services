@@ -7,7 +7,11 @@ var mongoose = require("mongoose");
 var TrafficSchema = new mongoose.Schema({
     date: { type: String },
     time: { type: String},
-    tics: {type: String}
+    tics: {type: String},
+    englishPlate : {type: String},
+    persianPlate1: {type: String},
+    persianPlate2: {type: String},
+    detectedImage: {type: String}
 }, { collection: 'traffic' });
 
 var TrafficModel = mongoose.model('traffic', TrafficSchema);

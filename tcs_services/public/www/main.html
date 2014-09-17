@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="css/styles/progress-slider3860.css?v=1">
     <link rel="stylesheet" href="css/styles/switches3860.css?v=1">
     <link rel="stylesheet" href="css/styles/table3860.css?v=1">
+    <link rel="stylesheet" href="css/kss.css">
 
     <!-- For all browsers -->
     <link rel="stylesheet" href="css/reset3860.css?v=1">
@@ -113,16 +114,10 @@
     <noscript class="message black-gradient simpler">مرورگر شما از این نسخه از جاوا اسکریپت پیروی نمیکند. ممکن است بعضی
         از قابلیت ها کار نکند.
     </noscript>
+
     <div class="with-padding">
 
-        <p class="wrapped left-icon icon-info-round"
-           style="float: right;direction: rtl;margin-bottom: 40px;margin-top: 20px;">
-            این جدول نمایش دهنده ترددهای صورت گرفته است.
-        </p>
-
-        <br/>
-
-
+<div id="tableHolder">
         <table class="table responsive-table"
                style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="traffic_table">
 
@@ -130,20 +125,162 @@
 
             <th scope="col" width="20%" class="align-center">تاریخ</th>
             <th scope="col" width="20%" class="align-center">زمان</th>
-            <th scope="col" width="60%" class="align-center">ابزار</th>
+            <th scope="col" width="20%" class="align-center">پلاک</th>
+            <th scope="col" width="40%" class="align-center">ابزار</th>
 
             </thead>
         </table>
+</div>
+</div>
+    <div class="with-padding">
+        <div class="columns" id="details" style="display: none;">
+
+            <div class="box-layout four-columns twelve-columns-tablet" style="height:400px;">
+
+                <p style="text-align:center;margin-top:10px;">
+                    اطلاعات آخرین تردد
+                </p>
+
+                <hr/>
+<center>
+                <table style="width:80%;direction:rtl;line-height:30px;margin-left: 10px;">
+                    <tr>
+                        <td>
+                            تاریخ تردد
+                        </td>
+                        <td id="lastTrafficDate">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            زمان تردد
+                        </td>
+                        <td id="lastTrafficTime">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            پلاک تشخیص داده شده
+                        </td>
+                        <td id="detectedPlate">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colaspan="2">
+                            <hr/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="input-3" class="label">نام</label>
+                        </td>
+                        <td>
+                            <input type="text" name="firstName" id="firstName" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="input-3" class="label">نام خانوادگی</label>
+                        </td>
+                        <td>
+                            <input type="text" name="lastName" id="lastName" size="9" class="input full-width" value="">
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <label for="input-3" class="label">کدملی</label>
+                        </td>
+                        <td>
+                            <input type="text" name="nationalityCode" id="nationalityCode" size="9"
+                                   class="input full-width" value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <hr/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                            <button class="button red-gradient"
+                                    style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="nextImage();">
+                                تصویر بعدی
+                            </button>
+                        </td>
+                        <td style="text-align:center;">
+                            <button class="button blue-gradient"
+                                    style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="getAllRecordsForPlate(0, 500);">
+                                تمامی ترددها
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colaspan="2">
+                            <hr/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  style="text-align:center;">
+                            <button class="button black-gradient"
+                                    style="font-family: Tahoma; font-size: 12px; width: 80%;" onclick="$('#tableHolder').show(); $('#details').hide();">
+بازگشت
+                            </button>
+                        </td>
+                        <td  style="text-align:center;">
+                            <button class="button green-gradient"
+                                    style="font-family: Tahoma; font-size: 12px; width: 80%;" onclick="saveDetails();">
+                                ثبت
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+    </center>
+            </div>
+
+            <div class="box-layout eight-columns twelve-columns-tablet" style="height:400px">
+                <img id="lastTrafficImage" width="100%" height="100%" style="margin-bottm:10px;"/>
+            </div>
+
+        </div>
+
     </div>
+    <div class="with-padding">
+
+        <div id="queryTableHolder" style="display: none;">
+            <button class="button black-gradient"
+                    style="font-family: Tahoma; font-size: 12px; width: 80%;" onclick="$('#tableHolder').show(); $('#details').hide();$('#queryTableHolder').hide();">
+                بازگشت
+            </button>
+            <hr/>
+            <table class="table responsive-table"
+                   style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="query_traffic_table">
+
+                <thead>
+
+                <th scope="col" width="20%" class="align-center">تاریخ</th>
+                <th scope="col" width="20%" class="align-center">زمان</th>
+                <th scope="col" width="20%" class="align-center">پلاک</th>
+                <th scope="col" width="40%" class="align-center">ابزار</th>
+
+                </thead>
+            </table>
+        </div>
+        </div>
 </section>
 <!-- End main content -->
 
 <!-- Side tabs shortcuts -->
 <ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-    <li class="current"><a href="main.html" class="shortcut-agenda" title="گزارش گیری">گزارش گیری</a></li>
-    <li><a href="events.html" class="shortcut-messages" title="رخدادها">رخدادها</a></li>
+    <li><a href="overview.html" class="shortcut-agenda" title="گزارش گیری">گزارش گیری</a></li>
+    <li class="current"><a href="main.html" class="shortcut-messages" title="رخدادها">رخدادها</a></li>
     <li><a href="settings.html" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
-    <li><a href="contactus.html" class="shortcut-contacts" title="تماس با ما">تماس با ما</a></li>
+    <li><a href="dateReport.html" class="shortcut-contacts" title="براساس تاریخ">براساس تاریخ</a></li>
 </ul>
 
 <!-- Sidebar/drop-down menu -->
@@ -228,132 +365,334 @@
 
 <script>
 
-    // Call template init (optional, but faster if called manually)
-    $.template.init();
-
-    $(document).ready(function () {
-        LoadAllTraffics();
+var images;
+var index = 0;
+var count;
+var plate;
+$.template.init();
+$(document).ready(function () {
+    tablefy('traffic_table');
+    tablefy('query_traffic_table');
+    loadData(50);
+});
+function tablefy(tableid){
+    var table = $('#' + tableid );
+    table.dataTable({
+        "aaSorting": [],
+        "bDestroy": true,
+        "bJQueryUI": true,
+        "bProcessing": true,
+        "bDeferRender": true,
+        "oLanguage": {
+            "sProcessing": "درحال پردازش...",
+            "sLengthMenu": "نمایش محتویات _MENU_",
+            "sZeroRecords": "موردی یافت نشد",
+            "sInfo": "نمایش _START_ تا _END_ از مجموع _TOTAL_ مورد",
+            "sInfoEmpty": "تهی",
+            "sInfoFiltered": "(فیلتر شده از مجموع _MAX_ مورد)",
+            "sInfoPostFix": "",
+            "sSearch": "جستجو:",
+            "sUrl": "",
+            "oPaginate": {
+                "sFirst": "ابتدا",
+                "sPrevious": "قبلی",
+                "sNext": "بعدی",
+                "sLast": "انتها"
+            }
+        },
+        'sPaginationType': 'full_numbers',
+        'fnInitComplete': function (oSettings) {
+        },
+        "aoColumns": [
+            {
+                "sTitle": "تاریخ"
+            },
+            {
+                "sTitle": "زمان"
+            },
+            {
+                "sTitle": "پلاک"
+            },
+            {
+                "sTitle": "",
+                "fnRender": function (obj) {
+                    var sReturn = obj.aData[obj.iDataColumn];
+                    //sReturn = '<center><div onclick="openComplexModal(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures">مشاهده تصاویر</div></center>';
+                    sReturn = '<center><div onclick="showDetails(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures" style="cursor:pointer;">مشاهده تصاویر</div></center>';
+                    console.log(sReturn);
+                    return sReturn;
+                }
+            }
+        ]
     });
-    function LoadAllTraffics() {
 
+}
+function showDetails(id) {
+    //window.location.replace("'" + 'details.html?trafficId=' + id + "'");
+    LoadById(id);
+    console.log(id);
+}
+function loadData(pageSize) {
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getPageCount/" + pageSize,
+        dataType: 'json',
+        success: function (result) {
+
+            //alert(result.pageCount);
+            count = parseInt(result.pageCount);
+            reload(count, pageSize);
+        },
+        error: function () {
+        },
+        async: true
+    });
+}
+function reload(page, pageSize) {
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getTrafficPage/" + page + "/" + pageSize,
+        dataType: 'json',
+        success: function (result) {
+            var exist = false;
+            var results = [];
+            var table = $('#traffic_table').dataTable();
+            for (var i = result.length - 1; i >= 0; i--) {
+                exist = true;
+                var d = "";
+                var correctedPlate = result[i].persianPlate2;
+                if (correctedPlate && correctedPlate.length == 8) {
+                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+                    d = '<div style="direction:rtl">' + d + '</div>';
+                }
+                var newObject = [
+                    result[i].date,
+                    result[i].time,
+                    d,
+                    result[i]._id
+                ];
+                table.fnAddData(newObject);
+                //results.push(newObject);
+            }
+            if (exist)
+                if (page > count-30) {
+                    setTimeout(function () {
+                        reload(page - 1, pageSize);
+                    }, 100);
+
+                }
+
+        },
+        error: function () {
+        },
+        async: true});
+
+}
+function loadImage(recordId){
+    recordI = recordId;
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getListOfImages/" + recordId,
+        dataType: 'json',
+        success: function (result) {
+            images = result;
+            $("#lastTrafficImage").prop("src", recordId + '/' + result[0]);
+            //var img = '<img src="' + recordId + '/' + result[0]  + '" width="100%"/>';
+        },
+        error: function () {
+        },
+        async: true});
+}
+function showImages(id) {
+    alert(id);
+}
+function openComplexModal(recordId) {
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getListOfImages/" + recordId,
+        dataType: 'json',
+        success: function (result) {
+
+            $.modal({
+                content: '<div  style="width:100%;"><img src="' + recordId + '/' + result[0] + '" width="100%"/> </div>',
+                title: 'تصویر',
+                width: 300,
+                scrolling: true,
+                actions: {
+                    'بستن': {
+                        color: 'red',
+                        click: function (win) {
+                            win.closeModal();
+                        }
+                    },
+                    'مرکز': {
+                        color: 'green',
+                        click: function (win) {
+                            win.centerModal(true);
+                        }
+                    },
+                    'بزرگنمایی': {
+                        color: 'red',
+                        click: function () {
+                            window.location = recordId + '/' + result[0];
+                        }
+                    }
+                },
+                contentBg: false,
+                buttons: {
+                    'بازگشت': {
+                        classes: 'huge blue-gradient glossy full-width kaveh',
+                        click: function (win) {
+                            win.closeModal();
+                        }
+                    }
+                },
+                buttonsLowPadding: true
+            });
+        },
+        error: function () {
+        },
+        async: true});
+}
+function getQueryStrings() {
+    var assoc = {};
+    var decode = function (s) {
+        return decodeURIComponent(s.replace(/\+/g, " "));
+    };
+    var queryString = location.search.substring(1);
+    var keyValues = queryString.split('&');
+
+    for (var i in keyValues) {
+        var key = keyValues[i].split('=');
+        if (key.length > 1) {
+            assoc[decode(key[0])] = decode(key[1]);
+        }
+    }
+
+    return assoc;
+}
+function walk(node, func) {
+    func(node);
+    node = node.firstChild;
+    while (node) {
+        walk(node, func);
+        node = node.nextSibling;
+    }
+}
+function replaceNumbers(node) {
+    if (node.nodeType == 3) //Text nodes only
+        node.nodeValue = node.nodeValue.replace(/[0-9]/g, getArabicNumber);
+}
+function getArabicNumber(n) {
+    return String.fromCharCode(1632 + parseInt(n, 10));
+}
+function LoadById(id) {
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getTrafficById/" + id,
+        dataType: 'json',
+        success: function (result) {
+            $("#tableHolder").hide();
+            $("#queryTableHolder").hide();
+            $("#details").show();
+            var results = [];
+            var d = "";
+            var correctedPlate = result.persianPlate2;
+            plate = correctedPlate;
+            getProfile();
+            if (correctedPlate && correctedPlate.length == 8) {
+                d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+                d = '<div style="direction:rtl">' + d + '</div>';
+            }
+            $("#lastTrafficDate").html(result.date);
+            $("#lastTrafficTime").html(result.time);
+            $("#detectedPlate").html(d);
+            loadImage(result._id);
+            walk(document.body, replaceNumbers);
+        },
+        error: function () {
+        },
+        async: false});
+}
+function nextImage() {
+    index++;
+    if (index >= images.length)
+        index = 0;
+
+    $("#lastTrafficImage").prop("src", recordI + '/' + images[index]);
+
+}
+function saveDetails() {
+    var firstName = $("#firstName").val();
+    var lastName = $("#lastName").val();
+    var nationalityCode = $("#nationalityCode").val();
+    console.log(firstName + " : " + lastName + " : " + nationalityCode);
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/saveProfile/" + firstName + "/" + lastName + "/" + nationalityCode + "/" + plate,
+        dataType: 'json',
+        success: function (result) {
+            //alert('saved');
+        },
+        error: function () {
+        },
+        async: true});
+
+}
+function getProfile() {
+    $.ajax({
+        type: 'GET',
+        url: "/traffic/getProfile/" + plate,
+        dataType: 'json',
+        success: function (result) {
+            $("#firstName").val(result.firstName);
+            $("#lastName").val(result.lastName);
+            $("#nationalityCode").val(result.nationalityCode);
+        },
+        error: function () {
+        },
+        async: true});
+}
+function getAllRecordsForPlate(page, pageSize){
+    console.log("all fo : " + plate);
+    if(plate != "") {
         $.ajax({
             type: 'GET',
-            url: "/traffic/getListOfTraffics",
+            url: "/traffic/getTrafficPageByPlate/" + page + "/" + pageSize + "/" + plate,
             dataType: 'json',
             success: function (result) {
+                $('#query_traffic_table').dataTable().fnClearTable();
+
+                $("#details").hide();
+                $("#tableHolder").hide();
+                $('#queryTableHolder').show();
+                var exist = false;
                 var results = [];
-                for (var i = 0; i < result.length; i++) {
+                var table = $('#query_traffic_table').dataTable();
+                for (var i = result.length - 1; i >= 0; i--) {
+                    exist = true;
+                    var d = "";
+                    var correctedPlate = result[i].persianPlate2;
+                    if (correctedPlate && correctedPlate.length == 8) {
+                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+                        d = '<div style="direction:rtl">' + d + '</div>';
+                    }
                     var newObject = [
                         result[i].date,
                         result[i].time,
+                        d,
                         result[i]._id
                     ];
-                    results.push(newObject);
+                    table.fnAddData(newObject);
+                    //results.push(newObject);
                 }
-                var table = $('#traffic_table');
-                table.dataTable({
-                    "bDestroy": true,
-                    "bJQueryUI": true,
-                    "bProcessing": true,
-                    "bDeferRender": true,
-                    "oLanguage": {
-                        "sProcessing": "درحال پردازش...",
-                        "sLengthMenu": "نمایش محتویات _MENU_",
-                        "sZeroRecords": "موردی یافت نشد",
-                        "sInfo": "نمایش _START_ تا _END_ از مجموع _TOTAL_ مورد",
-                        "sInfoEmpty": "تهی",
-                        "sInfoFiltered": "(فیلتر شده از مجموع _MAX_ مورد)",
-                        "sInfoPostFix": "",
-                        "sSearch": "جستجو:",
-                        "sUrl": "",
-                        "oPaginate": {
-                            "sFirst": "ابتدا",
-                            "sPrevious": "قبلی",
-                            "sNext": "بعدی",
-                            "sLast": "انتها"
-                        }
-                    },
-                    'sPaginationType': 'full_numbers',
-                    //'sDom': '<"dataTables_header"lfr>t<"dataTables_footer"ip>',
-                    'fnInitComplete': function (oSettings) {
-                        // Style length select
-                        // table.closest('.dataTables_wrapper').find('.dataTables_length select').addClass('select blue-gradient glossy').styleSelect();
-                        // tableStyled = true;
-                    },
-                    "aaData": results,
-                    "aoColumns": [
-                        {
-                            "sTitle": "تاریخ"
-                        },
-                        {
-                            "sTitle": "زمان"
-                        },
-                        {
-                            "sTitle": "",
-                            "fnRender": function (obj) {
-
-                                var sReturn = obj.aData[obj.iDataColumn];
-                                sReturn = '<center><div onclick="openComplexModal(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures">مشاهده تصاویر</div></center>';
-                                console.log(sReturn);
-                                return sReturn;
-                            }
-                        }
-                    ]
-                });
-            },
-            error: function () {
-            },
-            async: false});
-    }
-
-    function showImages(id) {
-        alert(id);
-    }
-
-    function openComplexModal(recordId) {
-        $.ajax({
-            type: 'GET',
-            url: "/traffic/getListOfImages/" + recordId,
-            dataType: 'json',
-            success: function (result) {
-                console.log("show images for : " + recordId);
-                $.modal({
-                    content: '<div style="width:100%;height:300px;"><img src="' + recordId + '/' + result[0]  + '" width="100%" height="100%"/> </div>',
-                    title: 'تصویر',
-                    width: 300,
-                    scrolling: false,
-                    actions: {
-                        'بستن': {
-                            color: 'red',
-                            click: function (win) {
-                                win.closeModal();
-                            }
-                        },
-                        'مرکز': {
-                            color: 'green',
-                            click: function (win) {
-                                win.centerModal(true);
-                            }
-                        }
-                    },
-                    contentBg: false,
-                    buttons: {
-                        'بازگشت': {
-                            classes: 'huge blue-gradient glossy full-width kaveh',
-                            click: function (win) {
-                                win.closeModal();
-                            }
-                        }
-                    },
-                    buttonsLowPadding: true
-                });
             },
             error: function () {
             },
             async: true});
     }
-    ;
 
+}
 </script>
 </body>
 </html>
