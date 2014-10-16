@@ -88,7 +88,7 @@
 </head>
 
 <body class="clearfix with-menu with-shortcuts">
-
+<div id="mainContent">
 <!-- Prompt IE 6 users to install Chrome Frame -->
 <!--[if lt IE 7]><p class="message red-gradient simpler">Your browser is <em>ancient!</em> <a
         href="http://browsehappy.com/">Upgrade to a different browser</a> or <a
@@ -133,7 +133,7 @@
 
                     <hr/>
 
-                    <table style="width:80%;direction:rtl;line-height:30px;">
+                    <table style="width:90%;direction:rtl;line-height:30px;">
                         <tr>
                             <td>
                                 تاریخ تردد
@@ -165,19 +165,26 @@
 
                         <tr>
                             <td>
-                                تعداد ترددهای امروز
+                                تعداد پلاک تشخیص داده شده
                             </td>
-                            <td>
+                            <td id="totalPlated" style="color:blue;">
                             </td>
-                        </tr>
                         </tr>
                         <tr>
-                            <td colaspan="2">
-                                تعداد کل ترددها
+                            <td>
+                                تعداد پلاک غیر اتوماتیک
+                            </td>
+                            <td id="manualPlated" style="color:blue;">
                             </td>
                         </tr>
 
 
+    <tr>
+                            <td>
+                                پلاک های تغییر داده شده
+                            </td>
+                            <td id="changedPlate" style="color:blue;">
+                            </td>
                         </tr>
                         <tr>
                             <td colaspan="2">
@@ -197,9 +204,8 @@
         </div>
     </center>
 </div>
-
-<div class="with-padding">
-    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;" id="settings">
+<div class="with-padding" id="settings" style="display:none;" name="panel">
+    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
         <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
             <legend class="legend">تنظیمات</legend>
             <p class="button-height inline-label">
@@ -207,6 +213,7 @@
                 <input type="text" name="input-3" id="input-3" size="9" class="input full-width"
                        value="">
             </p>
+
             <p class="button-height inline-label">
                 <label for="input-4" class="label">فریم در ثانیه</label>
                 <input type="text" name="input-4" id="input-4" size="9" class="input full-width"
@@ -227,42 +234,198 @@
 
             <hr/>
 
-            <div class="button-height"><button onclick="saveSettings();" type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات</button>
-                <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif" onclick="loadSettings();"/>
+            <div class="button-height">
+                <button onclick="saveSettings();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات
+                </button>
+                <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif"
+                        onclick="loadSettings();"/>
                 بازیابی از سرور
                 </button></div>
-
-
-
         </fieldset>
     </div>
 </div>
-<div class="with-padding">
+<div class="with-padding" id="addNewUser" style="display:none;" name="panel">
+    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+        <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+            <legend class="legend">کاربر جدید</legend>
+            <table style="width:100%;height: 300px;">
+                <tr>
+                    <td>
+                        <label for="input-3" class="label">نام کاربری</label>
 
-    <div id="tableHolder" name="panel">
-        <table class="table responsive-table"
-               style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="traffic_table">
+                    </td>
+                    <td>
+                        <input type="text" name="input-3" id="newUserUsername" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-4" class="label">نام</label>
+                    </td>
+                    <td>
+                        <input type="text" name="input-4" id="newUserFirstName" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-5" class="label">نام خانوادگی</label></td>
+                    <td>
+                        <input type="text" name="input-5" id="newUserLastName" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">کلمه عبور</label>
+                    <td>
+                        <input type="text" name="input-6" id="newUserPassword" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">شماره همراه</label>
+                    <td>
+                        <input type="text" name="input-6" id="newUserMobile" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">ایمیل</label>
+                    <td>
+                        <input type="text" name="input-6" id="newUserEmail" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">نقش</label>
+                    </td>
+                    <td>
+                        <select id="newUserRole" name="newUserRole" class="select validate[required]">
+                            <option value="user">مشاهده کننده</option>
+                            <option value="editor">ویرایش کننده</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
 
-            <thead>
-
-            <th scope="col" width="20%" class="align-center">تاریخ</th>
-            <th scope="col" width="20%" class="align-center">زمان</th>
-            <th scope="col" width="20%" class="align-center">پلاک</th>
-            <th scope="col" width="40%" class="align-center">ابزار</th>
-
-            </thead>
-        </table>
+            <div class="button-height">
+                <button onclick="addNewUser();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif">افزودن کاربر
+                </button>
+                <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif"
+                        onclick="ShowUser();"/>
+                بازگشت
+                </button>
+            </div>
+        </fieldset>
     </div>
 </div>
-<div class="with-padding">
-    <div class="columns" id="details" name="panel" style="display: none;">
+<div class="with-padding" id="addNewCamera" style="display:none;" name="panel">
+    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+        <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+            <legend class="legend">دوربین جدید</legend>
+            <table style="width:100%;height: 300px;">
+                <tr>
+                    <td>
+                        <label for="input-3" class="label">نام دروبین</label>
 
-        <div class="box-layout four-columns twelve-columns-tablet" style="height:400px;">
+                    </td>
+                    <td>
+                        <input type="text" name="input-3" id="newCameraName" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-4" class="label">RTSP</label>
+                    </td>
+                    <td>
+                        <input type="text" name="input-4" id="newCameraRTSP" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-5" class="label">FPS </label></td>
+                    <td>
+                        <input type="text" name="input-5" id="newCameraFPS" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">IP</label>
+                    <td>
+                        <input type="text" name="input-6" id="newCameraIP" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label"> آدرس پانل</label>
+                    <td>
+                        <input type="text" name="input-6" id="newCameraPanelUrl" size="9" class="input full-width"
+                               value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="input-6" class="label">نقش</label>
+                    </td>
+                    <td>
+                        <select id="newCameraRole" name="newCameraRole" class="select validate[required]">
+                            <option value="plate">تخیص پلاک</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
 
+            <div class="button-height">
+                <button onclick="addNewCamera();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif"> افزودن دوربین
+                </button>
+                <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif"
+                        onclick="ShowSettings();"/>
+                بازگشت
+                </button>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<div class="with-padding" id="tableHolder" name="panel">
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%;"
+            onclick="reloadAllData();">
+        بروزرسانی
+    </button>
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+        <th scope="col" width="40%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+</div>
+<div class="with-padding" id="details" name="panel" style="display: none;">
+    <div class="columns">
+        <div class="box-layout four-columns twelve-columns-tablet" style="height:530px;">
             <p style="text-align:center;margin-top:10px;">
-                اطلاعات آخرین تردد
+                اطلاعات تردد
             </p>
-
             <hr/>
             <center>
                 <table style="width:80%;direction:rtl;line-height:30px;margin-left: 10px;">
@@ -270,7 +433,7 @@
                         <td>
                             تاریخ تردد
                         </td>
-                        <td id="lastTrafficDate">
+                        <td id="DetailsTrafficDate">
                         </td>
 
                     </tr>
@@ -278,15 +441,27 @@
                         <td>
                             زمان تردد
                         </td>
-                        <td id="lastTrafficTime">
+                        <td id="DetailsTrafficTime">
                         </td>
 
                     </tr>
                     <tr>
-                        <td>
-                            پلاک تشخیص داده شده
+                        <td onclick="$('#DetailsDetectedPlateEdit').show();$('#DetailsDetectedPlate').hide();">
+                            پلاک
                         </td>
-                        <td id="detectedPlate">
+                        <td>
+                            <div id="DetailsDetectedPlate" style="width:100%;"
+                                 onclick="$('#DetailsDetectedPlateEdit').show();$('#DetailsDetectedPlate').hide();"></div>
+                            <table style="width:100%;display:none;" id="DetailsDetectedPlateEdit">
+                                <tr>
+                                    <td style="width:20%"><input id="part1" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="part2" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="part3" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="part4" style="width:100%" type="text"
+                                                                 value="ایران"/></td>
+                                    <td style="width:20%"><input id="part5" style="width:100%" type="text"/></td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     <tr>
@@ -296,7 +471,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label for="input-3" class="label">نام</label>
+                            <label class="label">نام</label>
                         </td>
                         <td>
                             <input type="text" name="firstName" id="firstName" size="9" class="input full-width"
@@ -306,7 +481,7 @@
 
                     <tr>
                         <td>
-                            <label for="input-3" class="label">نام خانوادگی</label>
+                            <label class="label">نام خانوادگی</label>
                         </td>
                         <td>
                             <input type="text" name="lastName" id="lastName" size="9" class="input full-width" value="">
@@ -316,7 +491,7 @@
 
                     <tr>
                         <td>
-                            <label for="input-3" class="label">کدملی</label>
+                            <label class="label">کدملی</label>
                         </td>
                         <td>
                             <input type="text" name="nationalityCode" id="nationalityCode" size="9"
@@ -329,13 +504,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align:center;">
+                        <td style="text-align:center;width:50%">
                             <button class="button red-gradient"
                                     style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="nextImage();">
                                 تصویر بعدی
                             </button>
                         </td>
-                        <td style="text-align:center;">
+
+                        <td style="text-align:center;width:50%">
                             <button class="button blue-gradient"
                                     style="font-family: Tahoma; font-size: 10px; width: 80%;"
                                     onclick="getAllRecordsForPlate(0, 500);">
@@ -349,37 +525,76 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align:center;">
+                        <td style="text-align:center;width:50%">
+                            <button class="button anthracite-gradient"
+                                    style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="nextRecord();">
+                                رکورد بعدی
+                            </button>
+                        </td>
+                        <td style="text-align:center;width:50%">
+                            <button class="button silver-gradient"
+                                    style="font-family: Tahoma; font-size: 10px; width: 80%;"
+                                    onclick="lastRecord();">
+                                رکورد قبلی
+                            </button>
+                        </td>
+                    </tr>
+		    
+                    <tr>
+                        <td colaspan="2">
+                            <hr/>
+                        </td>
+                    </tr>
+		    <tr>
+                        <td style="text-align:center;width:50%" colspan="2">
                             <button class="button black-gradient"
                                     style="font-family: Tahoma; font-size: 12px; width: 80%;"
-                                    onclick="$('#tableHolder').show(); $('#details').hide();">
+                                    onclick="showChangeLogs();">
+                                مشاهده تغییرات
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colaspan="2">
+                            <hr/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;width:50%">
+                            <button class="button black-gradient"
+                                    style="font-family: Tahoma; font-size: 12px; width: 80%;"
+                                    onclick="returnToPage();">
                                 بازگشت
                             </button>
                         </td>
-                        <td style="text-align:center;">
+                        <td style="text-align:center;width:50%">
                             <button class="button green-gradient"
-                                    style="font-family: Tahoma; font-size: 12px; width: 80%;" onclick="saveDetails();">
+                                    style="font-family: Tahoma; font-size: 12px; width: 80%;" id="saveProfileBtn"
+                                    onclick="saveDetails();">
                                 ثبت
                             </button>
                         </td>
                     </tr>
+
                 </table>
             </center>
         </div>
 
-        <div class="box-layout eight-columns twelve-columns-tablet" style="height:400px">
-            <img id="lastTrafficImage" width="100%" height="100%" style="margin-bottm:10px;"/>
+        <div class="box-layout eight-columns twelve-columns-tablet" style="height:450px;margin-top:40px;">
+            <img id="DetailsImage" style="cursor: pointer;" width="100%" height="100%" style="margin-bottm:10px;"
+                 onclick="ShowImageInNewTab();"/>
         </div>
 
     </div>
 
 </div>
-<div class="with-padding">
+<div class="with-padding" id="queryTableHolder" name="panel" style="display: none;">
 
-    <div id="queryTableHolder" name="panel" style="display: none;">
+    <div>
         <button class="button black-gradient"
                 style="font-family: Tahoma; font-size: 12px; width: 80%;"
-                onclick="$('#tableHolder').show(); $('#details').hide();$('#queryTableHolder').hide();">
+                onclick="returnToPage();">
             بازگشت
         </button>
         <hr/>
@@ -397,15 +612,548 @@
         </table>
     </div>
 </div>
+<div class="with-padding" id="manualPlateList" name="panel" style="display: none;">
+
+    <div>
+        <table class="table responsive-table"
+               style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="manual_traffic_table">
+
+            <thead>
+
+            <th scope="col" width="20%" class="align-center">تاریخ</th>
+            <th scope="col" width="20%" class="align-center">زمان</th>
+            <th scope="col" width="20%" class="align-center">پلاک</th>
+            <th scope="col" width="40%" class="align-center">ابزار</th>
+
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="with-padding" id="changedRecordList" name="panel" style="display: none;">
+
+    <div>
+        <table class="table responsive-table"
+               style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="changed_record_table">
+
+            <thead>
+
+            <th scope="col" width="20%" class="align-center">تاریخ</th>
+            <th scope="col" width="20%" class="align-center">زمان</th>
+            <th scope="col" width="20%" class="align-center">پلاک</th>
+            <th scope="col" width="40%" class="align-center">ابزار</th>
+
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="with-padding" id="userActivities" name="panel" style="display: none;">
+    <div>
+        <button class="button black-gradient"
+                style="font-family: Tahoma; font-size: 12px; width: 80%;"
+                onclick="returnToPage();">
+            بازگشت
+        </button>
+        <hr/>
+        <table class="table responsive-table"
+               style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="user_activity_table">
+            <thead>
+            <th scope="col" width="20%" class="align-center">شماره</th>
+            <th scope="col" width="20%" class="align-center">نام</th>
+            <th scope="col" width="20%" class="align-center">زمان</th>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="with-padding" id="changeLog" name="panel" style="display: none;">
+    <div>
+        <button class="button black-gradient"
+                style="font-family: Tahoma; font-size: 12px; width: 80%;"
+                onclick="returnToDetails();">
+            بازگشت
+        </button>
+        <hr/>
+        <table class="table responsive-table"
+               style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="change_log_table">
+            <thead>
+            <th scope="col" width="20%" class="align-center">از</th>
+            <th scope="col" width="20%" class="align-center">به</th>
+            <th scope="col" width="30%" class="align-center">توسط</th>
+	    <th scope="col" width="30%" class="align-center">زمان</th>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<div class="with-padding" id="queryByDate" name="panel" style="display: none;">
+    <table border="1" style="width: 100%;text-align: right;direction: rtl;">
+        <thead>
+        <th></th>
+        <th style="text-align: center; font-family: tahoma;">
+            از تاریخ
+        </th>
+        <th style="text-align: center; font-family: tahoma;">
+            تا تاریخ
+
+        </th>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="3">
+                <hr/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="from_date_day" class="label">روز</label>
+            </td>
+            <td style="text-align: center;">
+                <select id="from_date_day" name="from_date_day" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+
+            </td>
+            <td style="text-align: center;">
+                <select id="to_date_day" name="to_date_day" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="from_date_month" class="label">ماه</label>
+
+            </td>
+            <td style="text-align: center;">
+
+                <select id="from_date_month" name="from_date_month" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+            </td>
+            <td style="text-align: center;">
+
+                <select id="to_date_month" name="to_date_month" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="from_date_year" class="label">سال</label>
+
+            </td>
+            <td style="text-align: center;">
+
+                <select id="from_date_year" name="from_date_year" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1393">1393</option>
+                </select>
+
+            </td>
+            <td style="text-align: center;">
+
+                <select id="to_date_year" name="to_date_year" class="select validate[required]">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1393">1393</option>
+                </select>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <hr/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <div class="button-height">
+                    <button class="button green-gradient" style="font-family: Tahoma; font-size: 12px; width: 50%;"
+                            onclick="queryByDate();">جستجو
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <hr/>
+
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="date_traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+        <th scope="col" width="40%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+</div>
+<div class="with-padding" id="userList" name="panel" style="display: none;">
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%; text-align: right;"
+            onclick="getUserList();">
+        بروزرسانی
+    </button>
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%; text-align: right;"
+            onclick="showAddNewUser();">
+        افزودن کاربر
+    </button>
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="user_list_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">نام کاربری</th>
+        <th scope="col" width="20%" class="align-center">نام</th>
+        <th scope="col" width="20%" class="align-center">نام خانوادگی</th>
+        <th scope="col" width="40%" class="align-center">شماره موبایل</th>
+        <th scope="col" width="40%" class="align-center">وضعیت</th>
+        <th scope="col" width="40%" class="align-center"></th>
+        <th scope="col" width="40%" class="align-center"></th>
+        </thead>
+    </table>
+</div>
+<div class="with-padding" id="trafficWithPlate" name="panel" style="display: none;">
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%;"
+            onclick="reloadAllPlateData();">
+        بروزرسانی
+    </button>
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="plated_traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+	<th scope="col" width="20%" class="align-center">نام</th>
+        <th scope="col" width="20%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+</div>
+<div class="with-padding" id="trafficWithoutPlate" name="panel" style="display: none;">
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%;"
+            onclick="reloadAllUnPlateData();">
+        بروزرسانی
+    </button>
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="unplated_traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+        <th scope="col" width="40%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+</div>
+<div class="with-padding" id="cameraList" name="panel" style="display: none;">
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%; text-align: right;"
+            onclick="reloadAllCameras();">
+        بروزرسانی
+    </button>
+    <button class="button black-gradient"
+            style="font-family: Tahoma; font-size: 12px; width: 80%; text-align: right;"
+            onclick="showAddNewCamera();">
+        افزودن دوربین
+    </button>
+
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="camera_table">
+        <thead>
+        <th scope="col" width="20%" class="align-center">نام دوربین</th>
+        <th scope="col" width="20%" class="align-center">FPS</th>
+        <th scope="col" width="20%" class="align-center">RTSP</th>
+        <th scope="col" width="10%" class="align-center">وضعیت</th>
+        <th scope="col" width="15%" class="align-center"></th>
+        <th scope="col" width="15%" class="align-center"></th>
+        </thead>
+    </table>
+    <hr/>
+</div>
+<div class="with-padding" id="deviceSetting" name="panel" style="display: none;">
+    <table style="float: right;text-align: right; width: 100%;"><tr><td>
+        <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+            <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+                <legend class="legend">تنظیمات</legend>
+                <table style="width:100%;height: 150px;">
+                    <tr>
+                        <td>
+                            <label for="input-3" class="label"> شناسه شبکه</label>
+
+                        </td>
+                        <td>
+                            <input type="text" name="input-3" id="settingsIP" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="input-4" class="label">ماسک شبکه</label>
+                        </td>
+                        <td>
+                            <input type="text" name="input-4" id="settingsNetMask" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="input-5" class="label">دروازه </label></td>
+                        <td>
+                            <input type="text" name="input-5" id="settingsGateway" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="button-height">
+                                <button onclick="saveNetworkSettings();" type="submit" class="button blue-gradient"
+                                        style="font-family: tahoma, verdana, sans-serif">
+                                    اعمال تغیرات
+                                </button>
+                                <button type="submit" class="button blue-gradient"
+                                        style="font-family: tahoma, verdana, sans-serif"
+                                        onclick="resetDevice();"/>
+                                راه اندازی مجدد
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+    </td></tr></table>
+</div>
+<div class="with-padding" id="ProfileReport" name="panel" style="display: none;">
+    <div style="text-align: right; direction: rtl;">
+        <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+            <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+                <legend class="legend">جستجو</legend>
+                <table style="width:100%;">
+                    <tr style="display:none">
+                        <td width="20%">
+                            <label for="searchName" class="label">
+                                نام
+                            </label>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                            <input type="text" name="searchName" id="searchName" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            &nbsp
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td>
+                            <label for="searchDate" class="label">
+                                تاریخ
+                            </label>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                            <input type="text" name="searchDate" id="searchDate" size="9" class="input full-width"
+                                   value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            &nbsp
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="label">
+                                پلاک
+                            </label>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="width:20%"><input id="searchPart1" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="searchPart2" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="searchPart3" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="searchPart4" style="width:100%" type="text"
+                                                                 value="ایران"/></td>
+                                    <td style="width:20%"><input id="searchPart5" style="width:100%" type="text"/></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <hr/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">
+
+                        </td>
+                        <td colspan="2" style="text-align: center;">
+                            <button class="button grey-gradient"
+                                    style="font-family: Tahoma; font-size: 12px; width: 80%;"
+                                    onclick="makeSearch();">
+                                جستجو
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+    <hr/>
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="search_traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+        <th scope="col" width="40%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+
+</div>
 </section>
 <!-- End main content -->
 
 <!-- Side tabs shortcuts -->
 <ul id="shortcuts" role="complementary" class="children-tooltip tooltip-right">
-    <li><a onclick="ShowOverview();" class="shortcut-agenda" title="گزارش گیری">گزارش گیری</a></li>
-    <li class="current"><a onclick="ShowMain();" class="shortcut-messages" title="رخدادها">رخدادها</a></li>
-    <li><a href="settings.html" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
-    <li><a href="dateReport.html" class="shortcut-contacts" title="براساس تاریخ">براساس تاریخ</a></li>
+    <li id="menu1" name="menu"><a onclick="ShowOverview();" class="shortcut-agenda" title="آخرین رخداد">آخرین رخداد</a>
+    </li>
+    <li id="menu2" name="menu"><a onclick="ShowMain();" class="shortcut-stats" title="رخدادها">رخدادها</a></li>
+
+    <li id="menu5" name="menu"><a onclick="LoadWithPlates();" class="shortcut-message" title="رخدادهای با پلاک">رخدادهای
+        با پلاک</a></li>
+    <li id="menu6" name="menu"><a onclick="LoadWithoutPlates();" class="shortcut-messages" title="رخدادهای بی پلاک">رخدادهای
+        بی پلاک</a></li>
+    <li id="menu7" name="menu"><a onclick="LoadSearch();" class="dashboard" title="جستجو">جستجو</a></li>
+    <li id="menu3" name="menu"><a onclick="ShowQueryByDate();" class="shortcut-contacts" title="گزارش گیری">گزارش
+        گیری</a></li>
+    <li id="menu4" name="menu"><a onclick="ShowSettings();" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
+    <li id="menu9" name="menu"><a onclick="ShowUser();" class="shortcut-settings" title="مدیریت کاربران">مدیریت
+        کاربران</a></li>
 </ul>
 
 <!-- Sidebar/drop-down menu -->
@@ -425,11 +1173,13 @@
 
         <!-- By default, this section is made for 4 icons, see the doc to learn how to change this, in "basic markup explained" -->
         <ul id="access" class="children-tooltip">
-            <li><a href="inbox.html" title="رخدادهای سیستم"><span class="icon-inbox"></span><span class="count">2</span></a>
-            </li>
+            <!--<li><a href="inbox.html" title="رخدادهای سیستم"><span class="icon-inbox"></span><span class="count">2</span></a>-->
+            <!--</li>-->
 
             <li><a href="login.html" title="خروج"><span class="icon-user"></span></a></li>
-            <li><span class="icon-gear"></span></li>
+            <li onclick="showDeviceSettings();" id="deviceSettings" style="cursor: pointer;" title="تنظیمات دستگاه"><span class="icon-gear"></span></li>
+	    <li onclick="showChangedRecords();" id="changedRecords" style="cursor: pointer;" title="پلاک های تغییر داده شده"><span class="icon-inbox"></span></li>
+	    <li onclick="showManualPlate();" id="manualPlateList"><span class="icon-calendar" title="پلاک های وارد شده"></span></li>
         </ul>
 
         <!--<section class="navigable" >-->
@@ -465,6 +1215,7 @@
     <!--</footer>-->
 
 </section>
+</div>
 <!-- End sidebar/drop-down menu -->
 
 <!-- JavaScript at the bottom for fast page loading -->
@@ -487,432 +1238,51 @@
 <!-- Plugins -->
 <script src="js/libs/jquery.tablesorter.min.js"></script>
 <script src="js/libs/DataTables/jquery.dataTables.min.js"></script>
-
+<script src="js/api.js"></script>
 <script>
 
-var images;
-var index = 0;
-var count;
-var plate;
-$.template.init();
-$(document).ready(function () {
-    tablefy('traffic_table');
-    tablefy('query_traffic_table');
-    loadData(50);
-});
-function tablefy(tableid) {
-    var table = $('#' + tableid);
-    table.dataTable({
-        "aaSorting": [],
-        "bDestroy": true,
-        "bJQueryUI": true,
-        "bProcessing": true,
-        "bDeferRender": true,
-        "oLanguage": {
-            "sProcessing": "درحال پردازش...",
-            "sLengthMenu": "نمایش محتویات _MENU_",
-            "sZeroRecords": "موردی یافت نشد",
-            "sInfo": "نمایش _START_ تا _END_ از مجموع _TOTAL_ مورد",
-            "sInfoEmpty": "تهی",
-            "sInfoFiltered": "(فیلتر شده از مجموع _MAX_ مورد)",
-            "sInfoPostFix": "",
-            "sSearch": "جستجو:",
-            "sUrl": "",
-            "oPaginate": {
-                "sFirst": "ابتدا",
-                "sPrevious": "قبلی",
-                "sNext": "بعدی",
-                "sLast": "انتها"
-            }
-        },
-        'sPaginationType': 'full_numbers',
-        'fnInitComplete': function (oSettings) {
-        },
-        "aoColumns": [
-            {
-                "sTitle": "تاریخ"
-            },
-            {
-                "sTitle": "زمان"
-            },
-            {
-                "sTitle": "پلاک"
-            },
-            {
-                "sTitle": "",
-                "fnRender": function (obj) {
-                    var sReturn = obj.aData[obj.iDataColumn];
-                    //sReturn = '<center><div onclick="openComplexModal(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures">مشاهده تصاویر</div></center>';
-                    sReturn = '<center><div onclick="showDetails(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures" style="cursor:pointer;">مشاهده تصاویر</div></center>';
-                    console.log(sReturn);
-                    return sReturn;
-                }
-            }
-        ]
+    $.template.init();
+    $(document).ready(function () {
+        token = localStorage.getItem("token");
+        loadCurrentUser();
+        tablefy('traffic_table');
+        tablefy('query_traffic_table');
+        tablefy('date_traffic_table');
+        tablefyCustom('plated_traffic_table');
+	tablefy('manual_traffic_table');
+        tablefy('unplated_traffic_table');
+        tablefy('search_traffic_table');
+	tablefy('changed_record_table');
+        userActivityInit('user_activity_table');
+        userTableInit('user_list_table');
+        cameraTableInit('camera_table');
+	initChangeLogTable('change_log_table');
+        ShowOverview();
     });
-
-}
-function showDetails(id) {
-    //window.location.replace("'" + 'details.html?trafficId=' + id + "'");
-    LoadById(id);
-    console.log(id);
-}
-function loadData(pageSize) {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getPageCount/" + pageSize,
-        dataType: 'json',
-        success: function (result) {
-
-            //alert(result.pageCount);
-            count = parseInt(result.pageCount);
-            reload(count, pageSize);
-        },
-        error: function () {
-        },
-        async: true
-    });
-}
-function reload(page, pageSize) {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getTrafficPage/" + page + "/" + pageSize,
-        dataType: 'json',
-        success: function (result) {
-            var exist = false;
-            var results = [];
-            var table = $('#traffic_table').dataTable();
-            for (var i = result.length - 1; i >= 0; i--) {
-                exist = true;
-                var d = "";
-                var correctedPlate = result[i].persianPlate2;
-                if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
-                    d = '<div style="direction:rtl">' + d + '</div>';
-                }
-                var newObject = [
-                    result[i].date,
-                    result[i].time,
-                    d,
-                    result[i]._id
-                ];
-                table.fnAddData(newObject);
-                //results.push(newObject);
-            }
-            if (exist)
-                if (page > count - 30) {
-                    setTimeout(function () {
-                        reload(page - 1, pageSize);
-                    }, 100);
-
-                }
-
-        },
-        error: function () {
-        },
-        async: true});
-
-}
-function loadImage(recordId) {
-    recordI = recordId;
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getListOfImages/" + recordId,
-        dataType: 'json',
-        success: function (result) {
-            images = result;
-            $("#lastTrafficImage").prop("src", recordId + '/' + result[0]);
-            //var img = '<img src="' + recordId + '/' + result[0]  + '" width="100%"/>';
-        },
-        error: function () {
-        },
-        async: true});
-}
-function showImages(id) {
-    alert(id);
-}
-function openComplexModal(recordId) {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getListOfImages/" + recordId,
-        dataType: 'json',
-        success: function (result) {
-
-            $.modal({
-                content: '<div  style="width:100%;"><img src="' + recordId + '/' + result[0] + '" width="100%"/> </div>',
-                title: 'تصویر',
-                width: 300,
-                scrolling: true,
-                actions: {
-                    'بستن': {
-                        color: 'red',
-                        click: function (win) {
-                            win.closeModal();
-                        }
-                    },
-                    'مرکز': {
-                        color: 'green',
-                        click: function (win) {
-                            win.centerModal(true);
-                        }
-                    },
-                    'بزرگنمایی': {
-                        color: 'red',
-                        click: function () {
-                            window.location = recordId + '/' + result[0];
-                        }
-                    }
-                },
-                contentBg: false,
-                buttons: {
-                    'بازگشت': {
-                        classes: 'huge blue-gradient glossy full-width kaveh',
-                        click: function (win) {
-                            win.closeModal();
-                        }
-                    }
-                },
-                buttonsLowPadding: true
-            });
-        },
-        error: function () {
-        },
-        async: true});
-}
-function getQueryStrings() {
-    var assoc = {};
-    var decode = function (s) {
-        return decodeURIComponent(s.replace(/\+/g, " "));
-    };
-    var queryString = location.search.substring(1);
-    var keyValues = queryString.split('&');
-
-    for (var i in keyValues) {
-        var key = keyValues[i].split('=');
-        if (key.length > 1) {
-            assoc[decode(key[0])] = decode(key[1]);
-        }
-    }
-
-    return assoc;
-}
-function walk(node, func) {
-    func(node);
-    node = node.firstChild;
-    while (node) {
-        walk(node, func);
-        node = node.nextSibling;
-    }
-}
-function replaceNumbers(node) {
-    if (node.nodeType == 3) //Text nodes only
-        node.nodeValue = node.nodeValue.replace(/[0-9]/g, getArabicNumber);
-}
-function getArabicNumber(n) {
-    return String.fromCharCode(1632 + parseInt(n, 10));
-}
-function LoadById(id) {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getTrafficById/" + id,
-        dataType: 'json',
-        success: function (result) {
-            $("#tableHolder").hide();
-            $("#queryTableHolder").hide();
-            $("#details").show();
-            var results = [];
-            var d = "";
-            var correctedPlate = result.persianPlate2;
-            plate = correctedPlate;
-            getProfile();
-            if (correctedPlate && correctedPlate.length == 8) {
-                d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
-                d = '<div style="direction:rtl">' + d + '</div>';
-            }
-            $("#lastTrafficDate").html(result.date);
-            $("#lastTrafficTime").html(result.time);
-            $("#detectedPlate").html(d);
-            loadImage(result._id);
-            walk(document.body, replaceNumbers);
-        },
-        error: function () {
-        },
-        async: false});
-}
-function nextImage() {
-    index++;
-    if (index >= images.length)
-        index = 0;
-
-    $("#lastTrafficImage").prop("src", recordI + '/' + images[index]);
-
-}
-function saveDetails() {
-    var firstName = $("#firstName").val();
-    var lastName = $("#lastName").val();
-    var nationalityCode = $("#nationalityCode").val();
-    console.log(firstName + " : " + lastName + " : " + nationalityCode);
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/saveProfile/" + firstName + "/" + lastName + "/" + nationalityCode + "/" + plate,
-        dataType: 'json',
-        success: function (result) {
-            //alert('saved');
-        },
-        error: function () {
-        },
-        async: true});
-
-}
-function getProfile() {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getProfile/" + plate,
-        dataType: 'json',
-        success: function (result) {
-            $("#firstName").val(result.firstName);
-            $("#lastName").val(result.lastName);
-            $("#nationalityCode").val(result.nationalityCode);
-        },
-        error: function () {
-        },
-        async: true});
-}
-function getAllRecordsForPlate(page, pageSize) {
-    console.log("all fo : " + plate);
-    if (plate != "") {
-        $.ajax({
-            type: 'GET',
-            url: "/traffic/getTrafficPageByPlate/" + page + "/" + pageSize + "/" + plate,
-            dataType: 'json',
-            success: function (result) {
-                $('#query_traffic_table').dataTable().fnClearTable();
-
-                $("#details").hide();
-                $("#tableHolder").hide();
-                $('#queryTableHolder').show();
-                var exist = false;
-                var results = [];
-                var table = $('#query_traffic_table').dataTable();
-                for (var i = result.length - 1; i >= 0; i--) {
-                    exist = true;
-                    var d = "";
-                    var correctedPlate = result[i].persianPlate2;
-                    if (correctedPlate && correctedPlate.length == 8) {
-                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
-                        d = '<div style="direction:rtl">' + d + '</div>';
-                    }
-                    var newObject = [
-                        result[i].date,
-                        result[i].time,
-                        d,
-                        result[i]._id
-                    ];
-                    table.fnAddData(newObject);
-                    //results.push(newObject);
-                }
-            },
-            error: function () {
-            },
-            async: true});
-    }
-
-}
-
-
-var inter;
-function ShowOverview() {
-    $("div[name=panel]").hide();
-    $("#overview").show();
-    reloadoverview();
-    inter = setInterval(reloadoverview, 10000);
-}
-
-function reloadoverview() {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getLastTraffic",
-        dataType: 'json',
-        success: function (result) {
-            var results = [];
-            $("#lastTrafficDate").html(result.date);
-            $("#lastTrafficTime").html(result.time);
-            $("#detectedPlate").html(result.persianPlate2);
-            loadImageoverview(result._id);
-        },
-        error: function () {
-        },
-        async: false});
-}
-
-function loadImageoverview(recordId) {
-    $.ajax({
-        type: 'GET',
-        url: "/traffic/getListOfImages/" + recordId,
-        dataType: 'json',
-        success: function (result) {
-            $("#lastTrafficImage").prop("src", recordId + '/' + result[0]);
-            //var img = '<img src="' + recordId + '/' + result[0]  + '" width="100%"/>';
-        },
-        error: function () {
-        },
-        async: true});
-}
-
-function ShowMain() {
-    $("div[name=panel]").hide();
-    $("#tableHolder").show();
-    clearInterval(inter);
-}
-
-function ShowSettings(){
-    $("div[name=panel]").hide();
-    $("#settings").show();
-    loadSettings();
-    clearInterval(inter);
-}
-
-function loadSettings(){
-    $.ajax({
-        type: 'GET',
-        url: "/settings/getSettings",
-        dataType: 'json',
-        success: function (result) {
-            $("#input-3").val(result.RTSPUrl);
-            $("#input-4").val(result.FPS);
-            $("#input-5").val(result.ReTryOpenSerialPort);
-            $("#input-6").val(result.StopRTSPThr);
-        },
-        error: function(){},
-        async:true});
-}
-
-function saveSettings(){
-    var data = {
-        RTSPUrl :  $("#input-3").val(),
-        FPS     :   $("#input-4").val(),
-        ReTryOpenSerialPort : $("#input-5").val(),
-        StopRTSPThr : $("#input-6").val()
-    };
-    console.log(data);
-    $.ajax({
-        type: 'POST',
-        url: "/settings/setSettings",
-        dataType: 'json',
-        data: data,
-        success: function (result) {
-            $("#input-3").val(result.RTSPUrl);
-            $("#input-4").val(result.FPS);
-            $("#input-5").val(result.ReTryOpenSerialPort);
-            $("#input-6").val(result.StopRTSPThr);
-        },
-        error: function(){
-
-            console.log("error in set settings");
-        },
-        async:true});
-}
 
 </script>
+<!-- Modal Dialog -->
+<div id="openModal" class="modalDialog">
+    <div>
+        <div id="openModal_Close" title="Close" class="close" style="cursor: pointer;" onclick="CloseModalWindow();">
+            X
+        </div>
+        <center>
+            <h2 id="openModel_Title" style="font-family: tahoma; font-size: 16px; margin-bottom: 20px;
+                    margin-top: 10px; letter-spacing: 1px;">
+                توجه
+            </h2>
+            <hr/>
+        </center>
+        <center>
+            <div style="font-family: tahoma; font-size: 14px; direction: rtl; margin-bottom: 10px;">
+                <p id="openModal_Message">
+                </p>
+            </div>
+        </center>
+    </div>
+</div>
+<!-- End Of Modal -->
+
 </body>
 </html>

@@ -14,9 +14,7 @@ var datejs = require("safe_datejs");
 var fs = require("fs");
 var dir = require("node-dir");
 var jalali_moment = require("moment-jalaali");
-
 var router = express.Router();
-
 
 function getListOfImages(req, res) {
     try {
@@ -47,7 +45,7 @@ function getListOfImages(req, res) {
 
 function getListOfTraffic(req, res){
     try{
-        trafficModel.find(function(err, traffics){
+        trafficModel.find().populate('profile').exec(function(err, traffics){
             if(err)
                 throw err;
             res.json(traffics);
@@ -80,7 +78,7 @@ function getTrafficById(req, res){
 
 function getLastTraffic(req, res){
     try{
-        trafficModel.find(function(err, traffics){
+        trafficModel.find().sort({'_id': 1}).exec(function(err, traffics){
             if(err)
                 throw err;
 	    if(traffics && traffics.length > 0)
@@ -93,16 +91,197 @@ function getLastTraffic(req, res){
     }
 }
 
+function getNextRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find({'_id': {$gt: req.params.currentId}}).sort({'_id': 1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getNextPlatedRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find( { $and :[
+            {'_id': {$gt: req.params.currentId}}, {persianPlate2: {'$ne': null }}
+        ]}).sort({'_id': 1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getNextUnPlatedRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find( { $and :[
+            {'_id': {$gt: req.params.currentId}}, {persianPlate2:  null }
+        ]}).sort({'_id': 1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getNextPlatedRecordByPlate(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find( { $and :[
+            {'_id': {$gt: req.params.currentId}}, {persianPlate2:  req.params.plate }
+        ]}).sort({'_id': 1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getLastRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find({'_id': {$lt: req.params.currentId}}).sort({'_id': -1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getLastPlatedRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+
+        trafficModel.find( { $and :[
+            {'_id': {$lt: req.params.currentId}}, {persianPlate2: {'$ne': null }}
+        ]}).sort({'_id': -1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getLastUnPlatedRecord(req, res){
+    try{
+        console.log(req.params.currentId);
+        trafficModel.find( { $and :[
+            {'_id': {$lt: req.params.currentId}}, {persianPlate2: null }
+        ]}).sort({'_id': -1}).limit(1).exec(function(err, traffics){
+            if(err)
+                throw err;
+            if(traffics)
+                res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getLastPlatedRecordByPlate(req, res) {
+    try {
+        console.log(req.params.currentId);
+        trafficModel.find({ $and: [
+            {'_id': {$lt: req.params.currentId}},
+            {persianPlate2: req.params.plate }
+        ]}).sort({'_id': -1}).limit(1).exec(function (err, traffics) {
+            if (err)
+                throw err;
+            if (traffics)
+                res.json(traffics);
+        });
+    }
+    catch (ex) {
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+
 function getTrafficPage(req, res){
     try{
 	var pageNumber = req.params.pageNumber;
 	var pageSize = req.params.pageSize;
 	console.log(pageNumber + " : " + pageSize);
-        trafficModel.find({},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).sort({'_id':1}).exec(function(err, traffics){
+        trafficModel.find({},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).populate('profile').sort({'_id':1}).exec(function(err, traffics){
             if(err)
                 throw err;
 	    //if(traffics && traffics.length > 0)
         	res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getPlatedTrafficPage(req, res){
+    try{
+        var pageNumber = req.params.pageNumber;
+        var pageSize = req.params.pageSize;
+        console.log(pageNumber + " : " + pageSize);
+        trafficModel.find({persianPlate2: {'$ne': null }},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).populate('profile').sort({'_id':1}).exec(function(err, traffics){
+            if(err)
+                throw err;
+            //if(traffics && traffics.length > 0)
+            res.json(traffics);
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getUnPlatedTrafficPage(req, res){
+    try{
+        var pageNumber = req.params.pageNumber;
+        var pageSize = req.params.pageSize;
+        console.log(pageNumber + " : " + pageSize);
+        trafficModel.find({persianPlate2: null},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).populate('profile').sort({'_id':1}).exec(function(err, traffics){
+            if(err)
+                throw err;
+            //if(traffics && traffics.length > 0)
+            res.json(traffics);
         });
     }
     catch(ex){
@@ -117,7 +296,7 @@ function getTrafficPageByPlate(req, res){
         var pageSize = req.params.pageSize;
         var plate = req.params.plate;
         console.log(pageNumber + " : " + pageSize + " : " + plate);
-        trafficModel.find({persianPlate2:plate},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).sort({'_id':1}).exec(function(err, traffics){
+        trafficModel.find({persianPlate2:plate},{}).populate('profile').sort({'_id':1}).exec(function(err, traffics){
             if(err)
                 throw err;
             //if(traffics && traffics.length > 0)
@@ -138,6 +317,38 @@ function getPageCount(req, res){
 		var counts = traffics.length;
 		var pageCount = parseInt(counts)/parseInt(pageSize);
         	res.json({pageCount:parseInt(pageCount,10)});
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getPlatedPageCount(req, res){
+    try{
+        var pageSize = req.params.pageSize;
+        console.log(pageSize);
+        trafficModel.find({persianPlate2: {'$ne': null }}, function(err, traffics){
+            var counts = traffics.length;
+            var pageCount = parseInt(counts)/parseInt(pageSize);
+            res.json({pageCount:parseInt(pageCount,10)});
+        });
+    }
+    catch(ex){
+        res.send(ex.message, 502);
+        console.log(ex.message);
+    }
+}
+
+function getUnPlatedPageCount(req, res){
+    try{
+        var pageSize = req.params.pageSize;
+        console.log(pageSize);
+        trafficModel.find({persianPlate2: null}, function(err, traffics){
+            var counts = traffics.length;
+            var pageCount = parseInt(counts)/parseInt(pageSize);
+            res.json({pageCount:parseInt(pageCount,10)});
         });
     }
     catch(ex){
@@ -190,18 +401,27 @@ function getProfile(req, res){
 }
 
 function saveProfile(req, res){
+
     var firstName = req.params.firstName;
     var lastName = req.params.lastName;
     var nationalityCode = req.params.nationalityCode;
     var plate = req.params.plate;
+    var currentId = req.params.currentId;
     try
     {
+	AuthControl.updateUserActivity( " ذخیزه سازی پروفایل برای پلک  "  + plate + " شناسه رکورد " + currentId , req.user);
 	profileModel.findOne({'plate':plate}, function(err, prof){
 	    if(prof){
 		prof.firstName= firstName;
     		prof.lastName= lastName;
     		prof.nationalityCode= nationalityCode;
 		prof.save(null);
+		trafficModel.findOne({'_id':currentId}, function(err, traffic){
+		    if(traffic){
+			traffic.profile = prof.id;
+			traffic.save(null);
+		    }
+		});
 	    }
 	    else{
 		var profile = new profileModel({
@@ -211,6 +431,12 @@ function saveProfile(req, res){
     		    plate: plate
 		});
 		profile.save(null);
+		trafficModel.findOne({'_id':currentId}, function(err, traffic){
+		    if(traffic){
+			traffic.profile = profile.id;
+			traffic.save(null);
+		    }
+		});
 		res.send("ok");
 	    }
 	});
@@ -233,7 +459,7 @@ function getTrafficPageByDate(req, res){
 	var toMonth = req.params.toMonth;
 	var toYear = req.params.toYear;
 	console.log(pageNumber + " : " + pageSize + " : " +  fromDay + " : " + fromMonth + " : " + fromYear + " : " + toDay + " : " + toMonth + " : " + toYear);
-	trafficModel.find({},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).sort({'_id':1}).exec(function(err, traffics){
+	trafficModel.find().sort({'_id':1}).exec(function(err, traffics){
             if (err)
                 throw err;
             else {
@@ -259,18 +485,184 @@ function getTrafficPageByDate(req, res){
     }
 }
 
+function updatePlate(req, res){
+
+    try{
+        console.log(req.body.id + " : " + req.body.plate);
+        trafficModel.findOne({'_id':req.body.id}, function(err, traffic){
+            if(traffic){
+		var last = traffic.persianPlate2;
+		var next = req.body.plate;
+		AuthControl.updateUserActivity("تغییر پلاک از "  + last +  " به  " + next  , req.user);
+                traffic.persianPlate2 = req.body.plate;
+		traffic.changeLog.push({userName: req.user.username, userId: req.user.id, last : last, next : next});
+                traffic.save(null);
+            }
+
+            res.send("ok");
+        });
+    }
+    catch(ex){
+        console.log(ex)
+        res.send(ex);
+    }
+}
+
+function getAutomaticPlated(req, res){
+    try{
+	console.log("automatic plated");
+	trafficModel.find({persianPlate2: { $ne :  null}, englishPlate:  null}, function(err, traffics){
+            var counts = traffics.length;
+            res.json(counts);
+        });
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+
+function getManualPlated(req, res){
+    try{
+	console.log("manual plated");
+	trafficModel.find({persianPlate2: { $ne :  null}, englishPlate:  null}).populate('profile').exec(function(err, traffics){
+            //var counts = traffics.length;
+            res.json(traffics);
+        });
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function getTotalPlated(req, res){
+    try{
+	trafficModel.find({persianPlate2: { $ne :  null}}, function(err, traffics){
+            var counts = traffics.length;
+            res.json(counts);
+        });
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function getChangedRecords(req, res){
+    try{
+	trafficModel.find({changeLog: { $ne :  null}}).populate('profile').exec(function(err, traffics){
+            res.json(traffics);
+        });
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function inspectProfile(req, res){
+    try
+    {
+	profileModel.find(function(err, prof){
+	    for(var i = 0 ; i < prof.length ; i++){
+		var plate = prof[i].plate;
+		var id = prof[i].id;
+		trafficModel.findOne({persianPlate2:plate}, function(err, tr){
+		    if(tr){
+			tr.profile = id;
+			tr.save(null);
+		    }
+		    else{
+			console.log(err);
+		    }	
+		})
+	    };
+	});
+    }
+    catch(ex)
+    {
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function getChangeLogs(req, res){
+    try{
+	trafficModel.findOne({'_id': req.params.trafficId}, function(err, traffics){
+            //traffics.changeLog.find().populate('UserId').exec(function(err, changeLogs){
+		res.send(traffics.changeLog);
+	//    });
+        });
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function getChangedPlateCount(req, res){
+    try
+    {
+	trafficModel.find({changeLog: { $ne :  null}}, function(err, traffics){
+            res.json(traffics.length);
+        });	
+    }
+    catch(ex)
+    {
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function searchTraffic(req, res){
+    try{
+	trafficModel.find({persianPlate2: { $regex :  ".*" + req.params.plate + ".*"}}, function(err, tr){
+		    if(tr)
+			res.send(tr);
+		    else if(err){	
+			console.log(err);
+			res.send(err, 500);
+		    }
+		});
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
 module.exports = router;
-router.route('/getListOfTraffics').get(getListOfTraffic);
-router.route('/getPageCount/:pageSize').get(getPageCount);
-router.route('/getTrafficPage/:pageNumber/:pageSize').get(getTrafficPage);
-router.route('/getTrafficPageByPlate/:pageNumber/:pageSize/:plate').get(getTrafficPageByPlate);
-router.route('/saveProfile/:firstName/:lastName/:nationalityCode/:plate').get(saveProfile);
-router.route('/getTrafficPageByDate/:fromDay/:fromMonth/:fromYear/:toDay/:toMonth/:toYear/:pageNumber/:pageSize').get(getTrafficPageByDate);
-router.route('/getProfile/:plate').get(getProfile);
-router.route('/getLastTraffic').get(getLastTraffic);
-router.route('/getTrafficById/:trafficId').get(getTrafficById);
-router.route('/getListOfImages/:trafficId').get(getListOfImages);
-router.route('/getTrafficBetween/:start/:end').get(getTrafficBetween);
-
-
-
+router.route('/getListOfTraffics').get(AuthControl.requireAuthentication, getListOfTraffic);
+router.route('/getPageCount/:pageSize').get(AuthControl.requireAuthentication, getPageCount);
+router.route('/getPlatedPageCount/:pageSize').get(AuthControl.requireAuthentication, getPlatedPageCount);
+router.route('/getUnPlatedPageCount/:pageSize').get(AuthControl.requireAuthentication, getUnPlatedPageCount);
+router.route('/getTrafficPage/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getTrafficPage);
+router.route('/getPlatedTrafficPage/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getPlatedTrafficPage);
+router.route('/getUnPlatedTrafficPage/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getUnPlatedTrafficPage);
+router.route('/getTrafficPageByPlate/:pageNumber/:pageSize/:plate').get(AuthControl.requireAuthentication, getTrafficPageByPlate);
+router.route('/saveProfile/:firstName/:lastName/:nationalityCode/:plate/:currentId').get(AuthControl.requireAuthentication, saveProfile);
+router.route('/getTrafficPageByDate/:fromDay/:fromMonth/:fromYear/:toDay/:toMonth/:toYear/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getTrafficPageByDate);
+router.route('/getProfile/:plate').get(AuthControl.requireAuthentication, getProfile);
+router.route('/getLastTraffic').get(AuthControl.requireAuthentication, getLastTraffic);
+router.route('/getTrafficById/:trafficId').get(AuthControl.requireAuthentication, getTrafficById);
+router.route('/getListOfImages/:trafficId').get(AuthControl.requireAuthentication, getListOfImages);
+router.route('/getTrafficBetween/:start/:end').get(AuthControl.requireAuthentication, getTrafficBetween);
+router.route('/getNextRecord/:currentId').get(AuthControl.requireAuthentication, getNextRecord);
+router.route('/getLastRecord/:currentId').get(AuthControl.requireAuthentication, getLastRecord);
+router.route('/getNextPlatedRecord/:currentId').get(AuthControl.requireAuthentication, getNextPlatedRecord);
+router.route('/getLastPlatedRecord/:currentId').get(AuthControl.requireAuthentication, getLastPlatedRecord);
+router.route('/getNextUnPlatedRecord/:currentId').get(AuthControl.requireAuthentication, getNextUnPlatedRecord);
+router.route('/getLastUnPlatedRecord/:currentId').get(AuthControl.requireAuthentication, getLastUnPlatedRecord);
+router.route('/getNextPlatedRecordByPlate/:currentId/:plate').get(AuthControl.requireAuthentication, getNextPlatedRecordByPlate);
+router.route('/getLastPlatedRecordByPlate/:currentId/:plate').get(AuthControl.requireAuthentication, getLastPlatedRecordByPlate);
+router.route('/updatePlate').post(AuthControl.requireAuthentication,updatePlate);
+router.route('/getAutomaticPlated').get(AuthControl.requireAuthentication, getAutomaticPlated);
+router.route('/getTotalPlated').get(AuthControl.requireAuthentication, getTotalPlated);
+router.route('/inspectProfile').get(AuthControl.requireAuthentication, inspectProfile);
+router.route('/searchTraffic/:plate').get(AuthControl.requireAuthentication, searchTraffic);
+router.route('/getManualPlated').get(AuthControl.requireAuthentication, getManualPlated);
+router.route('/getChangedPlate').get(AuthControl.requireAuthentication, getChangedPlateCount);
+router.route('/getChangeLogs/:trafficId').get(getChangeLogs);
+router.route('/getChangedRecords').get(getChangedRecords);

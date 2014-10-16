@@ -78,7 +78,9 @@ User.methods.getBrief = function(){
         lastName : this.lastname,
         registerDate : this.registerdate,
         mobileNumber : this.mobileNumber,
-        gender       : this.gender
+        gender       : this.gender,
+	roles	     : this.roles,
+	activities   : this.activities
     };
     return result;
 }

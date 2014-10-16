@@ -24,6 +24,8 @@
         "ws":"*",
         "blueimp-file-upload-expressjs":"*",
         "node-dir":"*",
-        "moment-jalaali":"*"
+        "moment-jalaali":"*",
+	"shelljs":"*",
+	"network":"*"
     }
 }

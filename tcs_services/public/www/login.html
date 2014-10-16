@@ -105,6 +105,7 @@
 	<script src="js/developr.message.js"></script>
 	<script src="js/developr.notify.js"></script>
 	<script src="js/developr.tooltip.js"></script>
+    <script src="js/api.js"></script>
 
 	<script>
 
@@ -189,12 +190,17 @@
 					  		{
 					  			console.log(data.token);
                                 token = data.token;
+                                localStorage.setItem("token", token);
                                 window.location = "main.html";
 					  		},
-					  		error: function()
+					  		error: function(xhr, err, txt)
 					  		{
 					  			formLogin.clearMessages();
-                                displayError('نام کاربری و کلمه عبور اشتباه است.');
+                                console.log(xhr + " : " + txt + " : " + err);
+                                if(txt.indexOf('Forbidden') != -1)
+                                    displayError('حساب کاربری غیر فعال شده است');
+                                else
+                                    displayError('نام کاربری و کلمه عبور اشتباه است.');
 					  		}
 					  });
 
@@ -319,7 +325,7 @@
 		});
 
 		// What about a notification?
-		notify('توجه', 'این نسخه آزمایشنی بوده . در حال توسعه می باشد.', {
+		notify('توجه', 'این نسخه آزمایشی بوده و در حال تست و توسعه می باشد.', {
 			autoClose: false,
 			delay: 2500,
 			icon: 'img/demo/icon.png'

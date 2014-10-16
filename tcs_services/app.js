@@ -8,7 +8,8 @@ var users = require('./routes/users');
 var index = require('./routes/index');
 var settings = require('./routes/settings');
 var traffic = require('./routes/traffic');
-var connectionString = 'mongodb://192.168.88.128:27017/KIG';
+var camera = require('./routes/camera');
+var connectionString = 'mongodb://localhost:27017/KIG';
 var mongoose   = require('mongoose');
 mongoose.connect(connectionString); // connect to our database
 
@@ -39,6 +40,7 @@ app.use('/api', users);
 app.use('/', index);
 app.use('/settings', settings);
 app.use('/traffic', traffic);
+app.use('/camera', camera);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

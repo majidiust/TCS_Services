@@ -4,7 +4,7 @@ var tokenModel = require("../models/token").TokenModel;
 var jwt = require("jwt-simple");
 var moment = require("moment");
 var datejs = require("safe_datejs");
-
+var jalali_moment= require("moment-jalaali");
 var router = express.Router();
 
 
@@ -15,7 +15,7 @@ var requireAuthentication = function (req, res, next) {
             res.send("Access token has expired", 400);
         }
         userModel.findOne({ '_id': decoded.iss }, function (err, user) {
-            if(!user){
+            if (!user) {
                 res.send("Not found", 401);
             }
             else if (!err) {
@@ -39,11 +39,11 @@ var requireAuthentication = function (req, res, next) {
     }
 }
 
-function disableOtherAccounts(userId){
+function disableOtherAccounts(userId) {
     var today = new Date();
     var conditions = { userId: userId }
-    , update = { stete: true, deleted: today.AsDateJs() }
-    , options = { multi: true };
+        , update = { stete: true, deleted: today.AsDateJs() }
+        , options = { multi: true };
     tokenModel.update(conditions, update, options, function (err, numAffected) {
         if (err)
             console.log(err);
@@ -53,13 +53,12 @@ function disableOtherAccounts(userId){
     });
 }
 
-function updateUserActivity(activity, user)
-{
-    user.activities.push({ activityname: activity, activitydate : (new Date()).AsDateJs() });
+function updateUserActivity(activity, user) {
+    user.activities.push({ activityname: activity, activitydate: (new Date()).AsDateJs() });
     user.save(null);
 }
 
-function signout(req, res){
+function signout(req, res) {
     tokenModel.findOne({ token: req.headers.token, userId: req.user.userId }, function (err, token) {
         if (err) {
             return next(err);
@@ -75,10 +74,10 @@ function signout(req, res){
                 console.log("token updated successfully");
             });
         }
-    });    
+    });
 }
 
-function signin(req, res){
+function signin(req, res) {
     var userName = req.body.username;
     var password = req.body.password;
     userModel.findOne({ username: userName }, function (err, user) {
@@ -105,17 +104,21 @@ function signin(req, res){
                             console.log("Authentication error : password is wrong");
                             res.send("Authentication error : password is wrong", 401);
                         }
+                        else if(user.username != 'admin'  && user.isaproved == false){
+                            console.log("user has been disabled");
+                            res.send("user has been disabled", 403);
+                        }
                         else {
                             console.log("disabling other tokens for user  : " + userName);
-                            updateUserActivity("signin", user);
+                            updateUserActivity("ورود به سیستم", user);
                             disableOtherAccounts(user.id);
                             console.log("alocationg new token for user  : " + userName);
                             var expires = moment().add('days', 7).valueOf();
                             var token = jwt.encode({
-                                iss: user.id,
-                                exp: expires
-                            },
-                            "729183456258456"
+                                    iss: user.id,
+                                    exp: expires
+                                },
+                                "729183456258456"
                             );
                             var newTokenIns = new tokenModel({
                                 userId: user.id,
@@ -143,63 +146,173 @@ function signin(req, res){
     });
 }
 
-function signup(req, res){
+function signup(req, res) {
     console.log("Signup new user");
     var user = new userModel({
-        username            :   req.body.username,
-        hashedpassword      :   req.body.password,
-        firstname           :   req.body.firstName,
-        lastname            :   req.body.lastName,
-        gender              :   req.body.gender,
-        email               :   req.body.email,
-        mobileNumber        :   req.body.mobileNumber,
-        salt                :   "1",
-        isaproved           :   false,
-        islockedout         :   false
+        username: req.body.username,
+        hashedpassword: req.body.password,
+        firstname: req.body.firstName,
+        lastname: req.body.lastName,
+        gender: req.body.gender,
+        email: req.body.email,
+        mobileNumber: req.body.mobileNumber,
+        salt: "1",
+        isaproved: false,
+        islockedout: false
     });
     console.log(user);
     user.roles.push({ rolename: 'user' });
-    user.activities.push({ activityname: 'signup', activitydate : (new Date()).AsDateJs() });
+    user.activities.push({ activityname: 'ثبت نام', activitydate: (new Date()).AsDateJs() });
     user.save(function (err) {
         if (err)
             res.send(err, 401);
         else
-            res.json({message: 'user added to database successfully'});
+            res.json({message: 'user added to database successfully', userId: user.id});
     });
 }
 
-function getUserList(req, res){
-    
+function getUserList(req, res) {
+
     //save activities
-    updateUserActivity("getUserList", req.user);
+    updateUserActivity("مشاهده لیست کاربران", req.user);
     userModel.find(function (err, users) {
         if (err)
             res.send(err, 401);
         else {
-           
+
             res.json(users);
         }
     });
 }
 
-function getUser(req, res){
-    updateUserActivity("getUserByEmail", req.user);
+function getUser(req, res) {
+    updateUserActivity("دریافت کاربر یا ایمیل", req.user);
     console.log("Get user by email : " + req.params.email);
-    if(req.params.email){
+    if (req.params.email) {
         userModel.findOne({ email: req.params.email }, function (err, user) {
             res.json(user.getBrief());
         });
     }
 }
 
-function getCurrentUser(req, res){
-    updateUserActivity("getCurrentUser", req.user);
+function getUserById(req, res) {
+    updateUserActivity("دریافت کاربر با شناسه", req.user);
+    console.log("Get user by id : " + req.body.userId);
+    if (req.body.userId) {
+        userModel.findOne({'_id': req.body.userId }, function (err, user) {
+            res.json(user.getBrief());
+        });
+    }
+}
+
+
+function getCurrentUser(req, res) {
+    updateUserActivity("دریافت اطلاعات کاربر فعلی", req.user);
     console.log("get current user : " + req.user.email);
     return res.json(req.user.getBrief());
 }
+
+function addRoleToUser(req, res) {
+    try {
+        updateUserActivity("افزودن نقش به کاربر", req.user);
+        userModel.findOne({ '_id': req.body.userId }, function (err, user) {
+            if (user) {
+                var find = false;
+                for (var i = 0; i < user.roles.length; i++) {
+                    if (user.roles[i].rolename == req.body.rolename) {
+                        find = true;
+                        break;
+                    }
+                }
+                if (find == false)
+                    user.roles.push({rolename: req.body.rolename});
+                res.send("ok");
+                user.save(null);
+            }
+            else
+                res.send('not found', 404);
+        });
+    }
+    catch (ex) {
+        console.log(ex);
+        res.send(ex, 500);
+    }
+}
+
+function changeUserStatus(req, res) {
+
+    try {
+        userModel.findOne({ '_id': req.body.userId }, function (err, user) {
+            if (user) {
+                user.isaproved = Boolean(!user.isaproved);
+                user.save(null);
+                updateUserActivity("تغییر وضعیت کاربر : " + req.body.userId + " : " + user.isaproved, req.user);
+                res.send("ok");
+            }
+            else{
+                res.send("not found", 406);
+            }
+        });
+    }
+    catch (ex) {
+        console.log(ex);
+        res.send(ex, 500);
+    }
+}
+
+function getUserActivity(req, res){
+    try{
+	var pageNumber = req.params.page;
+	var pageSize = req.params.pageSize;
+	var userId = req.params.userId;
+	console.log(pageNumber + " : " + pageSize + " : " + userId);
+	userModel.findOne({'_id':userId}).exec(function(error, users){
+	    if(error){	
+		res.send(error, 500);
+	    }
+	    if(users){
+		var result = [];
+		for(var i = 0; i < pageSize ; i++){
+		    if(pageNumber*pageSize + i < users.activities.length){
+			var dd = users.activities[i + pageNumber*pageSize];
+//			console.log(dd.activitydate);
+			var ss = dd.activitydate.toISOString().replace('T', ' ');
+			console.log(ss);
+			var ddd = jalali_moment(ss, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss'); // 1392/6/31 23:59:59
+			console.log(ddd);
+			dd.activitydate = ddd;
+			result.push({_id: dd.id , activityname: dd.activityname, activitydate : ddd} );
+		    }
+		    else break;
+		}
+		res.json(result);
+	    }
+	});
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function getUserActivityCount(req, res){
+    try
+    {
+	var userId = req.params.userId;
+	userModel.findOne({'_id':userId}, function(err, user){
+	    var count = user.activities.length;
+	    console.log(count);
+	    res.json({count:count});
+	});
+    }
+    catch(ex){
+	console.log(ex);
+	lres.send(ex, 500);
+    }
+}
 /*
-*   Register user apis
-*/
+ *   Register user apis
+ */
 
 
 router.route('/signout').post(requireAuthentication, signout);
@@ -207,9 +320,12 @@ router.route('/signin').post(signin);
 router.route('/signup').post(signup);
 router.route('/userList').get(requireAuthentication, getUserList);
 router.route('/getUserByMail/:email').get(requireAuthentication, getUser);
+router.route('/getUserById').post(requireAuthentication, getUserById);
 router.route('/getCurrentUser').get(requireAuthentication, getCurrentUser);
-
-
+router.route('/addRoleToUser').post(requireAuthentication, addRoleToUser);
+router.route('/changeUserStatus').post(requireAuthentication, changeUserStatus);
+router.route('/getUserActivity/:page/:pageSize/:userId').get(getUserActivity);
+router.route('/getUserActivityCount/:userId').get(getUserActivityCount);
 module.exports = router;
 module.exports.requireAuthentication = requireAuthentication;
 module.exports.updateUserActivity = updateUserActivity;
