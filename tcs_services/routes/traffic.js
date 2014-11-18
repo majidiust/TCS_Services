@@ -15,6 +15,9 @@ var fs = require("fs");
 var dir = require("node-dir");
 var jalali_moment = require("moment-jalaali");
 var router = express.Router();
+var walk    = require('walk');
+var admZip = require('adm-zip');
+var fs = require('fs');
 
 function getListOfImages(req, res) {
     try {
@@ -239,6 +242,8 @@ function getLastPlatedRecordByPlate(req, res) {
 function getTrafficPage(req, res){
     try{
 	var pageNumber = req.params.pageNumber;
+	if(pageNumber < 0)
+	    pageNumber = 2;
 	var pageSize = req.params.pageSize;
 	console.log(pageNumber + " : " + pageSize);
         trafficModel.find({},{},{skip: parseInt(pageNumber)*parseInt(pageSize), limit: parseInt(pageSize)}).populate('profile').sort({'_id':1}).exec(function(err, traffics){
@@ -409,35 +414,85 @@ function saveProfile(req, res){
     var currentId = req.params.currentId;
     try
     {
-	AuthControl.updateUserActivity( " ذخیزه سازی پروفایل برای پلک  "  + plate + " شناسه رکورد " + currentId , req.user);
-	profileModel.findOne({'plate':plate}, function(err, prof){
-	    if(prof){
-		prof.firstName= firstName;
-    		prof.lastName= lastName;
-    		prof.nationalityCode= nationalityCode;
-		prof.save(null);
-		trafficModel.findOne({'_id':currentId}, function(err, traffic){
-		    if(traffic){
-			traffic.profile = prof.id;
-			traffic.save(null);
+	trafficModel.findOne({ '_id' : currentId }).exec(function(err, tr){
+	    if(err){
+		res.send(err, 500);
+	    }
+	    if(tr){
+		var hasAccess = true;
+		if(req.user.periods){
+		    hasAccess = false;
+		    var date = (new Date()).AsDateJs();
+		    var currentdate = new Date(); 
+		    var currentHour = currentdate.getHours();
+		    var selectedPeriod;
+		    for(var i = 0 ; i < req.user.periods.length ; i++){
+			if(req.user.periods[i].status == true){
+			    selectedPeriod = req.user.periods[i];
+			    if(parseInt(currentHour) <= parseInt(selectedPeriod.end) && parseInt(currentHour) >= parseInt(selectedPeriod.begin)){
+				var tmp = jalali_moment(tr.date + " " + tr.time, "jYYYY/jMM/jDD HH:mm:ss").format('YYYY/MM/DD');
+                		var dds = tmp.split("/");
+				console.log("record day : " + dds[2] + " , currentDay :" +  currentdate.getDate());
+				if(parseInt(dds[2]) != parseInt(currentdate.getDate())){
+				    hasAccess = false;    
+				}
+				else
+				{
+				    hasAccess = true;
+				    console.log("Has access in this time");
+				}
+			    }
+			}
 		    }
-		});
+		}
+		if(hasAccess){
+		    var pl = "جدید";
+		    if(pl){
+			pl = plate[0] + plate[1] + plate[2] + plate[3] + plate[4] + plate[5] + ' ایران ' + plate[6] + plate[7];
+		    }
+		    var msg =  " ذخیزه سازی پروفایل برای پلاک  "  + pl + " شناسه رکورد " + currentId + " مورخ  " + tr.date + " ساعت " + tr.time;
+		    console.log(msg);
+		    AuthControl.updateUserActivity(msg, req.user);
+		    profileModel.findOne({'plate':plate}, function(err, prof){
+		    if(prof){
+			prof.firstName= firstName;
+    			prof.lastName= lastName;
+    			prof.nationalityCode= nationalityCode;
+			prof.save(null);
+		        trafficModel.find({'persianPlate2': plate}, function(err, traffics){
+			    if(traffics){
+				for(var i = 0 ; i < traffics.length ; i++){
+				    console.log(traffics[i].id);
+				    traffics[i].profile = prof.id;
+				    traffics[i].save(null);
+				}
+			    }
+			});
+		    }
+		    else{
+			var profile = new profileModel({
+    			    firstName: firstName,
+    			    lastName: lastName,
+    			    nationalityCode: nationalityCode,
+    			    plate: plate
+			});
+			profile.save(null);
+			trafficModel.findOne({'_id':currentId}, function(err, traffic){
+			    if(traffic){
+				traffic.profile = profile.id;
+				traffic.save(null);
+			    }
+			});
+			res.send("ok");
+			}
+		    });
+		}
+		else{
+		    res.send("No access to the record in this time, your edit time has over", 500);
+		}
 	    }
 	    else{
-		var profile = new profileModel({
-    		    firstName: firstName,
-    		    lastName: lastName,
-    		    nationalityCode: nationalityCode,
-    		    plate: plate
-		});
-		profile.save(null);
-		trafficModel.findOne({'_id':currentId}, function(err, traffic){
-		    if(traffic){
-			traffic.profile = profile.id;
-			traffic.save(null);
-		    }
-		});
-		res.send("ok");
+		res.send("not found");
 	    }
 	});
     }
@@ -486,19 +541,52 @@ function getTrafficPageByDate(req, res){
 }
 
 function updatePlate(req, res){
-
     try{
         console.log(req.body.id + " : " + req.body.plate);
         trafficModel.findOne({'_id':req.body.id}, function(err, traffic){
             if(traffic){
-		var last = traffic.persianPlate2;
-		var next = req.body.plate;
-		AuthControl.updateUserActivity("تغییر پلاک از "  + last +  " به  " + next  , req.user);
-                traffic.persianPlate2 = req.body.plate;
-		traffic.changeLog.push({userName: req.user.username, userId: req.user.id, last : last, next : next});
-                traffic.save(null);
+		var hasAccess = true;
+		if(req.user.periods){
+		    hasAccess = false;
+		    var date = (new Date()).AsDateJs();
+		    var currentdate = new Date(); 
+		    var currentHour = currentdate.getHours();
+		    var selectedPeriod;
+		    for(var i = 0 ; i < req.user.periods.length ; i++){
+			if(req.user.periods[i].status == true){
+			    selectedPeriod = req.user.periods[i];
+			    console.log(currentHour + ":" + parseInt(selectedPeriod.begin) + ":" + parseInt(selectedPeriod.end));
+			    if(parseInt(currentHour) <= parseInt(selectedPeriod.end) && parseInt(currentHour) >= parseInt(selectedPeriod.begin)){
+				//hasAccess = true;
+				console.log("Has Access update plate");
+				var tmp = jalali_moment(traffic.date + " " + traffic.time, "jYYYY/jMM/jDD HH:mm:ss").format('YYYY/MM/DD');
+                		var dds = tmp.split("/");
+				console.log("record day : " + dds[2] + " , currentDay :" +  currentdate.getDate());
+				if(parseInt(dds[2]) != parseInt(currentdate.getDate())){
+				    hasAccess = false;    
+				}
+				else
+				{
+				    hasAccess = true;
+				    console.log("Has access in this time");
+				}
+			    }    
+			}
+		    }
+		}
+		if(hasAccess == true){
+		    var last = traffic.persianPlate2;
+		    var next = req.body.plate;
+		    AuthControl.updateUserActivity("تغییر پلاک از "  + last +  " به  " + next  , req.user);
+            	    traffic.persianPlate2 = req.body.plate;
+		    if(last != next)
+			traffic.changeLog.push({userName: req.user.username, userId: req.user.id, last : last, next : next});
+            	    traffic.save(null);
+		}
+		else{
+		    res.send("No access to the record in this time, your edit time has over", 500);
+		}
             }
-
             res.send("ok");
         });
     }
@@ -521,7 +609,6 @@ function getAutomaticPlated(req, res){
 	res.send(ex, 500);
     }
 }
-
 
 function getManualPlated(req, res){
     try{
@@ -592,7 +679,22 @@ function getChangeLogs(req, res){
     try{
 	trafficModel.findOne({'_id': req.params.trafficId}, function(err, traffics){
             //traffics.changeLog.find().populate('UserId').exec(function(err, changeLogs){
-		res.send(traffics.changeLog);
+		var result = [];
+		for(var i = 0 ; i < traffics.changeLog.length ; i++){
+		    var ss = traffics.changeLog[i].date.toISOString().replace('T', ' ');
+		    var sss = jalali_moment(ss, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss');
+		    traffics.changeLog[i].date = sss;
+		    console.log(sss);
+		    result.push(
+			{
+			    userName : traffics.changeLog[i].userName, 
+			    userId: traffics.changeLog[i].userId,
+			    last:traffics.changeLog[i].last, 
+			    next: traffics.changeLog[i].next,
+			    _id:traffics.changeLog[i]._id, 
+			    date: sss});
+		}
+		res.send(result);
 	//    });
         });
     }
@@ -633,6 +735,36 @@ function searchTraffic(req, res){
     }
 }
 
+function getAbstract(req, res){
+    try{
+	var trafficId = req.params.trafficId;
+	trafficModel.findOne({'_id':trafficId}, function(error, traffic){
+	var zip = new admZip();
+	    console.log('/home/blurkaveh/TCS_Services/tcs_services/public/www/' + trafficId);
+	    var walker  = walk.walk('/home/blurkaveh/TCS_Services/tcs_services/public/www/' + trafficId, { followLinks: false });
+	    walker.on('file', function(root, stat, next) {
+		console.log("file url : "  + root + '/' + stat.name);
+		zip.addLocalFile(root + '/' + stat.name);
+		next();
+	    });
+	    walker.on('end', function() {
+		var willSendthis = zip.toBuffer();
+		var writer = fs.createWriteStream('/home/blurkaveh/TCS_Services/tcs_services/public/www/' +trafficId + "/" + trafficId + ".zip");
+		writer.write(willSendthis);
+		writer.end();
+		var url = 'www/' +trafficId + "/" + trafficId + ".zip";
+		var result = {data : traffic, url :url };
+		res.json(result);		
+	    });    
+	});
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+
 module.exports = router;
 router.route('/getListOfTraffics').get(AuthControl.requireAuthentication, getListOfTraffic);
 router.route('/getPageCount/:pageSize').get(AuthControl.requireAuthentication, getPageCount);
@@ -665,4 +797,5 @@ router.route('/searchTraffic/:plate').get(AuthControl.requireAuthentication, sea
 router.route('/getManualPlated').get(AuthControl.requireAuthentication, getManualPlated);
 router.route('/getChangedPlate').get(AuthControl.requireAuthentication, getChangedPlateCount);
 router.route('/getChangeLogs/:trafficId').get(getChangeLogs);
+router.route('/getAbstract/:trafficId').get(getAbstract);
 router.route('/getChangedRecords').get(getChangedRecords);

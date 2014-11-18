@@ -62,9 +62,9 @@
     <script src="js/libs/modernizr.custom.js"></script>
 
     <!-- For Modern Browsers -->
-    <link rel="shortcut icon" href="img/favicons/favicon.png">
+    <link rel="shortcut icon" href="img/favicons/kaveh.png">
     <!-- For everything else -->
-    <link rel="shortcut icon" href="img/favicons/favicon.ico">
+    <link rel="shortcut icon" href="img/favicons/kaveh.icon">
     <!-- For retina screens -->
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/favicons/apple-touch-icon-retina.png">
     <!-- For iPad 1-->
@@ -83,6 +83,8 @@
           media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
     <link rel="apple-touch-startup-image" href="img/splash/iphone.png" media="screen and (max-device-width: 320px)">
 
+
+    <link rel="stylesheet" href="js/amib/js-persian-cal.css">
     <!-- Microsoft clear type rendering -->
     <meta http-equiv="cleartype" content="on">
 </head>
@@ -162,7 +164,9 @@
                                 <hr/>
                             </td>
                         </tr>
-
+			</table>
+			<table style="width:90%;direction:rtl;line-height:30px;" id="adminStatistics">
+			
                         <tr>
                             <td>
                                 تعداد پلاک تشخیص داده شده
@@ -186,6 +190,42 @@
                             <td id="changedPlate" style="color:blue;">
                             </td>
                         </tr>
+			
+<tr>
+                            <td>
+                                تعداد کل پلاک ها
+                            </td>
+                            <td id="totalAllPlated" style="color:blue;">
+                            </td>
+                        </tr>
+
+
+			    <tr>
+                            <td>
+            تشخیص و اصلاح
+                            </td>
+                            <td id="detectedAndCorrected" style="color:blue;">
+                            </td>
+                        </tr>
+
+<tr>
+                            <td>
+                                دقت تشخیص پلاک
+                            </td>
+                            <td id="detectionRate" style="color:blue;">
+                            </td>
+                        </tr>
+
+<tr>
+                            <td>
+                            دقت صحت پلاک
+                            </td>
+                            <td id="correctedRate" style="color:blue;">
+                            </td>
+                        </tr>
+
+
+
                         <tr>
                             <td colaspan="2">
                                 <hr/>
@@ -231,9 +271,7 @@
                 <input type="text" name="input-6" id="input-6" size="9" class="input full-width"
                        value="">
             </p>
-
             <hr/>
-
             <div class="button-height">
                 <button onclick="saveSettings();" type="submit" class="button blue-gradient"
                         style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات
@@ -245,6 +283,113 @@
         </fieldset>
     </div>
 </div>
+
+<div class="with-padding" id="userPeriod" style="display:none;" name="panel">
+    <div style="text-align: right; direction: rtl;">
+	<div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+    	    <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+		<legend class="legend">زمان های شیفت</legend>
+		<table style="width:100%;">
+		    <tr>
+			<td>
+			    <label class="label" style="font-szie:12px; font-family:tahoma;">ساعت شروع</label>
+			</td>
+			<td>
+			    <input type="text" id="userBeginTime" size="9" class="input full-width" value="">
+			</td>
+		    </tr>
+		    <tr>
+			<td colspan="3">
+			&nbsp;
+			</td>
+		    </tr>
+		    <tr>
+			<td>
+			    <label class="label" style="font-szie:12px; font-family:tahoma;">ساعت پایان</label>
+			</td>
+			<td>
+			    <input type="text"  id="userEndTime" size="9" class="input full-width"
+                       value="">
+			</td>
+		    </tr>
+		    
+		    <tr></tr>
+		</table>
+        	<hr/>
+        	<div class="button-height">
+            	    <button onclick="saveUserPeriods();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات
+            	    </button>
+            	    <button type="submit" class="button blue-gradient" style="font-family: tahoma, verdana, sans-serif"
+                        onclick="loadUserPeriods();">
+                بازیابی از سرور
+            	    </button>
+		</div>
+    	    </fieldset>
+	</div>
+    </div>
+</div>
+
+<div class="with-padding" id="passwordSetting" style="display:none;" name="panel">
+    <div style="text-align: right; direction: rtl;">
+    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+        <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+            <legend class="legend">تغییر کلمه عبور</legend>
+            <p class="button-height inline-label">
+                <label for="input-3" class="label">کلمه عبور فعلی</label>
+                <input type="password" name="currentPassword" id="currentPassword" size="9" class="input full-width"
+                       value="">
+            </p>
+
+            <p class="button-height inline-label">
+                <label for="input-4" class="label">کلمه عبور جدید</label>
+                <input type="password" name="newConfirmation" id="newPassword" size="9" class="input full-width"
+                       value="">
+            </p>
+
+	    <p class="button-height inline-label">
+                <label for="input-4" class="label">تکرار کلمه عبور</label>
+                <input type="password" name="newPasswordConfirmation" id="newPasswordConfirmation" size="9" class="input full-width"
+                       value="">
+            </p>
+
+            <hr/>
+
+            <div class="button-height">
+                <button onclick="savePasswordSetting();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات
+                </button>
+                </div>
+        </fieldset>
+    </div>
+</div>
+</div>
+
+<div class="with-padding" id="changeUserPassword" style="display:none;" name="panel">
+    <div style="text-align: right; direction: rtl;">
+    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+        <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+            <legend class="legend">تغییر کلمه عبور</legend>
+            <p class="button-height inline-label">
+                <label for="input-4" class="label">کلمه عبور جدید</label>
+                <input type="password" id="otherUserPassword" size="9" class="input full-width"
+                       value="">
+            </p>
+	    <p class="button-height inline-label">
+                <label for="input-4" class="label">تکرار کلمه عبور</label>
+                <input type="password" id="otherUserPasswordConfirmation" size="9" class="input full-width" value="">
+            </p>
+            <hr/>
+    	    <div class="button-height">
+                <button onclick="saveUserPassword();" type="submit" class="button blue-gradient"
+                        style="font-family: tahoma, verdana, sans-serif">اعمال تنظیمات
+                </button>
+                </div>
+    	    </fieldset>
+	</div>
+    </div>
+</div>
+
 <div class="with-padding" id="addNewUser" style="display:none;" name="panel">
     <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
         <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
@@ -281,7 +426,7 @@
                     <td>
                         <label for="input-6" class="label">کلمه عبور</label>
                     <td>
-                        <input type="text" name="input-6" id="newUserPassword" size="9" class="input full-width"
+                        <input type="password" name="input-6" id="newUserPassword" size="9" class="input full-width"
                                value="">
                     </td>
                 </tr>
@@ -328,7 +473,8 @@
     </div>
 </div>
 <div class="with-padding" id="addNewCamera" style="display:none;" name="panel">
-    <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+    <div style="text-align: right; direction: rtl;">
+        <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
         <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
             <legend class="legend">دوربین جدید</legend>
             <table style="width:100%;height: 300px;">
@@ -381,7 +527,7 @@
                     </td>
                     <td>
                         <select id="newCameraRole" name="newCameraRole" class="select validate[required]">
-                            <option value="plate">تخیص پلاک</option>
+                            <option value="plate">تشخیص پلاک</option>
                         </select>
                     </td>
                 </tr>
@@ -399,6 +545,7 @@
             </div>
         </fieldset>
     </div>
+</div>
 </div>
 <div class="with-padding" id="tableHolder" name="panel">
     <button class="button black-gradient"
@@ -422,7 +569,7 @@
 </div>
 <div class="with-padding" id="details" name="panel" style="display: none;">
     <div class="columns">
-        <div class="box-layout four-columns twelve-columns-tablet" style="height:530px;">
+        <div class="box-layout four-columns twelve-columns-tablet" style="height:550px;">
             <p style="text-align:center;margin-top:10px;">
                 اطلاعات تردد
             </p>
@@ -454,12 +601,20 @@
                                  onclick="$('#DetailsDetectedPlateEdit').show();$('#DetailsDetectedPlate').hide();"></div>
                             <table style="width:100%;display:none;" id="DetailsDetectedPlateEdit">
                                 <tr>
-                                    <td style="width:20%"><input id="part1" style="width:100%" type="text"/></td>
-                                    <td style="width:20%"><input id="part2" style="width:100%" type="text"/></td>
-                                    <td style="width:20%"><input id="part3" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="part5" style="width:100%" type="text"/></td>
                                     <td style="width:20%"><input id="part4" style="width:100%" type="text"
                                                                  value="ایران"/></td>
-                                    <td style="width:20%"><input id="part5" style="width:100%" type="text"/></td>
+				    <td style="width:20%"><input id="part3" style="width:100%" type="text"/></td>
+				    <td style="width:20%"><input id="part2" style="width:100%" type="text"/></td>
+				    <td style="width:20%"><input id="part1" style="width:100%" type="text"/></td>
+                                </tr>
+                    		
+                                <tr>
+                                    <td style="width:20%">11</td>
+                                    <td style="width:20%"> ایران </td>
+				    <td style="width:20%"> 345 </td>
+				    <td style="width:20%"> الف </td>
+				    <td style="width:20%"> 12 </td>
                                 </tr>
                             </table>
                         </td>
@@ -581,7 +736,7 @@
             </center>
         </div>
 
-        <div class="box-layout eight-columns twelve-columns-tablet" style="height:450px;margin-top:40px;">
+        <div class="box-layout eight-columns twelve-columns-tablet" style="height:450px;margin-top:50px;">
             <img id="DetailsImage" style="cursor: pointer;" width="100%" height="100%" style="margin-bottm:10px;"
                  onclick="ShowImageInNewTab();"/>
         </div>
@@ -687,203 +842,6 @@
     </div>
 </div>
 
-
-<div class="with-padding" id="queryByDate" name="panel" style="display: none;">
-    <table border="1" style="width: 100%;text-align: right;direction: rtl;">
-        <thead>
-        <th></th>
-        <th style="text-align: center; font-family: tahoma;">
-            از تاریخ
-        </th>
-        <th style="text-align: center; font-family: tahoma;">
-            تا تاریخ
-
-        </th>
-        </thead>
-        <tbody>
-        <tr>
-            <td colspan="3">
-                <hr/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="from_date_day" class="label">روز</label>
-            </td>
-            <td style="text-align: center;">
-                <select id="from_date_day" name="from_date_day" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                    <option value="31">31</option>
-                </select>
-
-            </td>
-            <td style="text-align: center;">
-                <select id="to_date_day" name="to_date_day" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                    <option value="31">31</option>
-                </select>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="from_date_month" class="label">ماه</label>
-
-            </td>
-            <td style="text-align: center;">
-
-                <select id="from_date_month" name="from_date_month" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                </select>
-
-            </td>
-            <td style="text-align: center;">
-
-                <select id="to_date_month" name="to_date_month" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                </select>
-
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="from_date_year" class="label">سال</label>
-
-            </td>
-            <td style="text-align: center;">
-
-                <select id="from_date_year" name="from_date_year" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1393">1393</option>
-                </select>
-
-            </td>
-            <td style="text-align: center;">
-
-                <select id="to_date_year" name="to_date_year" class="select validate[required]">
-                    <option value="">انتخاب کنید</option>
-                    <option value="1393">1393</option>
-                </select>
-
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" style="text-align: center;">
-                <hr/>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3" style="text-align: center;">
-                <div class="button-height">
-                    <button class="button green-gradient" style="font-family: Tahoma; font-size: 12px; width: 50%;"
-                            onclick="queryByDate();">جستجو
-                    </button>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-
-    </table>
-    <hr/>
-
-    <table class="table responsive-table"
-           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="date_traffic_table">
-
-        <thead>
-
-        <th scope="col" width="20%" class="align-center">تاریخ</th>
-        <th scope="col" width="20%" class="align-center">زمان</th>
-        <th scope="col" width="20%" class="align-center">پلاک</th>
-        <th scope="col" width="40%" class="align-center">ابزار</th>
-
-        </thead>
-    </table>
-</div>
 <div class="with-padding" id="userList" name="panel" style="display: none;">
     <button class="button black-gradient"
             style="font-family: Tahoma; font-size: 12px; width: 80%; text-align: right;"
@@ -901,13 +859,15 @@
 
         <thead>
 
-        <th scope="col" width="20%" class="align-center">نام کاربری</th>
-        <th scope="col" width="20%" class="align-center">نام</th>
-        <th scope="col" width="20%" class="align-center">نام خانوادگی</th>
-        <th scope="col" width="40%" class="align-center">شماره موبایل</th>
-        <th scope="col" width="40%" class="align-center">وضعیت</th>
-        <th scope="col" width="40%" class="align-center"></th>
-        <th scope="col" width="40%" class="align-center"></th>
+        <th scope="col" width="10%" class="align-center">نام کاربری</th>
+        <th scope="col" width="10%" class="align-center">نام</th>
+        <th scope="col" width="10%" class="align-center">نام خانوادگی</th>
+        <th scope="col" width="15%" class="align-center">شماره موبایل</th>
+        <th scope="col" width="10%" class="align-center">وضعیت</th>
+        <th scope="col" width="10%" class="align-center"></th>
+        <th scope="col" width="10%" class="align-center"></th>
+	<th scope="col" width="15%" class="align-center"></th>
+	<th scope="col" width="10%" class="align-center"></th>
         </thead>
     </table>
 </div>
@@ -979,7 +939,7 @@
     <hr/>
 </div>
 <div class="with-padding" id="deviceSetting" name="panel" style="display: none;">
-    <table style="float: right;text-align: right; width: 100%;"><tr><td>
+    <div style="text-align: right; direction: rtl;">
         <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
             <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
                 <legend class="legend">تنظیمات</legend>
@@ -1029,13 +989,30 @@
                 </table>
             </fieldset>
         </div>
-    </td></tr></table>
+    </div>
 </div>
 <div class="with-padding" id="ProfileReport" name="panel" style="display: none;">
     <div style="text-align: right; direction: rtl;">
         <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
             <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
-                <legend class="legend">جستجو</legend>
+		<table style="width:100%;">
+		    <tr>
+			<td style="font-size:12px;font-family:tahoma;">نوع جستجو</td>
+			<td><select id="searchType" class="select">
+		    <option value="1" style="font-size:12px;font-family:tahoma;"> براساس پلاک  </option>
+		    <option value="0" style="font-size:12px;font-family:tahoma;"> براساس تاریخ</option>
+		</select> </td>
+		    </tr>
+		</table>
+	    </fieldset>
+	</div>
+    </div>
+
+    <div id="profileSearch">
+    <div style="text-align: right; direction: rtl;">
+        <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;">
+            <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;">
+                <!-- <legend class="legend">جستجو</legend> -->
                 <table style="width:100%;">
                     <tr style="display:none">
                         <td width="20%">
@@ -1088,13 +1065,24 @@
                         </td>
                         <td>
                             <table style="width:100%;">
-                                <tr>
-                                    <td style="width:20%"><input id="searchPart1" style="width:100%" type="text"/></td>
-                                    <td style="width:20%"><input id="searchPart2" style="width:100%" type="text"/></td>
-                                    <td style="width:20%"><input id="searchPart3" style="width:100%" type="text"/></td>
-                                    <td style="width:20%"><input id="searchPart4" style="width:100%" type="text"
-                                                                 value="ایران"/></td>
+                                <tr>                                    
+                                    
                                     <td style="width:20%"><input id="searchPart5" style="width:100%" type="text"/></td>
+<td style="width:20%"><input id="searchPart4" style="width:100%" type="text"
+                                                                 value="ایران"/></td>
+<td style="width:20%"><input id="searchPart3" style="width:100%" type="text"/></td>
+<td style="width:20%"><input id="searchPart2" style="width:100%" type="text"/></td>
+                                    <td style="width:20%"><input id="searchPart1" style="width:100%" type="text"/></td>
+                                </tr>
+                            </table>
+			    <hr/>
+                            <table style="width:100%;">
+                                <tr>                                    
+                                    <td style="width:20%"> 66 </td>
+				    <td style="width:20%"> ایران </td>
+				    <td style="width:20%"> 345 </td>
+				    <td style="width:20%"> الف </td>
+                                    <td style="width:20%"> 12 </td>
                                 </tr>
                             </table>
                         </td>
@@ -1133,6 +1121,70 @@
 
         </thead>
     </table>
+</div>
+<div id="queryByDate">
+<div style="text-align: right; direction: rtl;">
+ <div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;"> 
+        <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 10px;"> 
+<table style="width:100%;">
+    <tr>
+	<td width="20%">
+	    <label class="label" style="font-family:tahoma;">از تاریخ</label><br>
+	</td>
+	<td width="10%">
+	</td>
+	<td width="70%">
+	    <input type="text" id="pcal1" class="pdate"><br>
+	</td>
+    </tr>
+    <tr>
+	<td colspan="3">
+	    <hr/>
+	</td>
+    </tr>
+    <tr>
+	<td width="20%">
+	    <label class="label" style="font-family:tahoma;">تا تاریخ</label><br>
+	</td>
+	<td width="10%">
+	</td>
+	<td width="70%">
+	    <input type="text" id="pcal2" class="pdate"><br>
+	</td>
+    </tr>
+    <tr>
+	<td colspan="3">
+	    <hr/>
+	</td>
+    </tr>
+    <tr>
+            <td colspan="3" style="text-align: center;">
+                <div class="button-height">
+                    <button class="button green-gradient" style="font-family: Tahoma; font-size: 12px; width: 50%;"
+                            onclick="queryByDate();">جستجو
+                    </button>
+                </div>
+            </td>
+    </tr>
+</table>
+	    </fieldset> 
+	</div> 
+    </div>
+    <hr/>
+
+    <table class="table responsive-table"
+           style="width:100%;font-family: tahoma, verdana, sans-serif; direction: rtl;" id="date_traffic_table">
+
+        <thead>
+
+        <th scope="col" width="20%" class="align-center">تاریخ</th>
+        <th scope="col" width="20%" class="align-center">زمان</th>
+        <th scope="col" width="20%" class="align-center">پلاک</th>
+        <th scope="col" width="40%" class="align-center">ابزار</th>
+
+        </thead>
+    </table>
+    </div>
 
 </div>
 </section>
@@ -1144,15 +1196,15 @@
     </li>
     <li id="menu2" name="menu"><a onclick="ShowMain();" class="shortcut-stats" title="رخدادها">رخدادها</a></li>
 
-    <li id="menu5" name="menu"><a onclick="LoadWithPlates();" class="shortcut-message" title="رخدادهای با پلاک">رخدادهای
+    <li id="menu5" name="menu"><a onclick="LoadWithPlates();" class="shortcut-notes" title="رخدادهای با پلاک">رخدادهای
         با پلاک</a></li>
-    <li id="menu6" name="menu"><a onclick="LoadWithoutPlates();" class="shortcut-messages" title="رخدادهای بی پلاک">رخدادهای
+    <li id="menu6" name="menu"><a onclick="LoadWithoutPlates();" class="shortcut-dashboard" title="رخدادهای بی پلاک">رخدادهای
         بی پلاک</a></li>
-    <li id="menu7" name="menu"><a onclick="LoadSearch();" class="dashboard" title="جستجو">جستجو</a></li>
-    <li id="menu3" name="menu"><a onclick="ShowQueryByDate();" class="shortcut-contacts" title="گزارش گیری">گزارش
-        گیری</a></li>
+    <li id="menu7" name="menu"><a onclick="LoadSearch();" class="shortcut-medias" title="جستجو">جستجو</a></li>
+<!--    <li id="menu3" name="menu"><a onclick="ShowQueryByDate();" class="shortcut-contacts" title="گزارش گیری">گزارش
+        گیری</a></li> -->
     <li id="menu4" name="menu"><a onclick="ShowSettings();" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
-    <li id="menu9" name="menu"><a onclick="ShowUser();" class="shortcut-settings" title="مدیریت کاربران">مدیریت
+    <li id="menu9" name="menu"><a onclick="ShowUser();" class="shortcut-contacts" title="مدیریت کاربران">مدیریت
         کاربران</a></li>
 </ul>
 
@@ -1176,15 +1228,19 @@
             <!--<li><a href="inbox.html" title="رخدادهای سیستم"><span class="icon-inbox"></span><span class="count">2</span></a>-->
             <!--</li>-->
 
-            <li><a href="login.html" title="خروج"><span class="icon-user"></span></a></li>
+            <li onclick="signOut();" style="cursor: pointer;" title="خروج"><span class="icon-user"></span></li>
             <li onclick="showDeviceSettings();" id="deviceSettings" style="cursor: pointer;" title="تنظیمات دستگاه"><span class="icon-gear"></span></li>
 	    <li onclick="showChangedRecords();" id="changedRecords" style="cursor: pointer;" title="پلاک های تغییر داده شده"><span class="icon-inbox"></span></li>
 	    <li onclick="showManualPlate();" id="manualPlateList"><span class="icon-calendar" title="پلاک های وارد شده"></span></li>
         </ul>
-
-        <!--<section class="navigable" >-->
-        <!--<ul class="big-menu">-->
-        <!--<li class="with-right-arrow">-->
+	
+        <section class="navigable" >
+	
+        <ul class="big-menu">
+    	    <li class="with-right-arrow">
+		<div onclick="showPasswordSetting();" style="font-family:tahome;font-size:12px;">تغییر کلمه عبور</div>
+	    </li>
+	</ul>
         <!--<span><span class="list-count">3</span>گزارش گیری</span>-->
         <!--<ul class="big-menu">-->
         <!--<li><a href="typography.html">امتیاز من</a></li>-->
@@ -1239,8 +1295,12 @@
 <script src="js/libs/jquery.tablesorter.min.js"></script>
 <script src="js/libs/DataTables/jquery.dataTables.min.js"></script>
 <script src="js/api.js"></script>
-<script>
+<link rel="stylesheet" href="js/amib/js-persian-cal.css">
+<script type="text/javascript" src="js/amib/js-persian-cal.min.js"></script>
 
+<script>
+    var objCal1 = new AMIB.persianCalendar( 'pcal1');
+    var objCal2 = new AMIB.persianCalendar( 'pcal2');
     $.template.init();
     $(document).ready(function () {
         token = localStorage.getItem("token");
@@ -1258,8 +1318,20 @@
         cameraTableInit('camera_table');
 	initChangeLogTable('change_log_table');
         ShowOverview();
+	$("#queryByDate").hide();
+	$("#profileSearch").show();
+	$("#searchType").change(function(){
+	    var val = $("#searchType").val();
+	    if(val == 1){
+		$("#queryByDate").hide();
+		$("#profileSearch").show();
+	    }
+	    else if(val == 0){
+		$("#queryByDate").show();
+		$("#profileSearch").hide();
+	    }
+	});	
     });
-
 </script>
 <!-- Modal Dialog -->
 <div id="openModal" class="modalDialog">

@@ -133,7 +133,7 @@ function signin(req, res) {
                                     console.log("Token saved successfully");
                                 }
 
-                                var result = user.getBrief();
+                                var result = user.getSummery();
                                 result["token"] = token;
                                 res.json(result);
                                 return;
@@ -162,6 +162,33 @@ function signup(req, res) {
     });
     console.log(user);
     user.roles.push({ rolename: 'user' });
+    user.activities.push({ activityname: 'ثبت نام', activitydate: (new Date()).AsDateJs() });
+    user.save(function (err) {
+        if (err)
+            res.send(err, 401);
+        else
+            res.json({message: 'user added to database successfully', userId: user.id});
+    });
+}
+
+
+
+function signupAdmin(req, res) {
+    console.log("Signup new user");
+    var user = new userModel({
+        username: req.body.username,
+        hashedpassword: req.body.password,
+        firstname: req.body.firstName,
+        lastname: req.body.lastName,
+        gender: req.body.gender,
+        email: req.body.email,
+        mobileNumber: req.body.mobileNumber,
+        salt: "1",
+        isaproved: false,
+        islockedout: false
+    });
+    console.log(user);
+    user.roles.push({ rolename: 'admin' });
     user.activities.push({ activityname: 'ثبت نام', activitydate: (new Date()).AsDateJs() });
     user.save(function (err) {
         if (err)
@@ -272,13 +299,23 @@ function getUserActivity(req, res){
 	    }
 	    if(users){
 		var result = [];
+		//var ii = pageSize;
+		//if(pageSize >= user.activities.length)
+		//{
+		//    ii = user.activities.length;	
+		//}
 		for(var i = 0; i < pageSize ; i++){
 		    if(pageNumber*pageSize + i < users.activities.length){
 			var dd = users.activities[i + pageNumber*pageSize];
 //			console.log(dd.activitydate);
+			dd.activitydate.setHours(dd.activitydate.getHours() + 3);
+			dd.activitydate.setMinutes(dd.activitydate.getMinutes() + 30);
+			console.log(dd.activitydate);
 			var ss = dd.activitydate.toISOString().replace('T', ' ');
 			console.log(ss);
 			var ddd = jalali_moment(ss, 'YYYY-M-D HH:mm:ss').format('jYYYY/jM/jD HH:mm:ss'); // 1392/6/31 23:59:59
+//			ddd.add(3, "hour");
+//			ddd.add(30, "minutes");
 			console.log(ddd);
 			dd.activitydate = ddd;
 			result.push({_id: dd.id , activityname: dd.activityname, activitydate : ddd} );
@@ -310,6 +347,194 @@ function getUserActivityCount(req, res){
 	lres.send(ex, 500);
     }
 }
+
+function changePassword(req, res){
+    try
+    {
+	if(req.body.password)
+	{
+		req.user.verifyPassword(req.body.currentPassword, function (err, isMatch) {
+                    if (err) {
+                        console.log(err);
+                        res.send("Authentication error: error in verify password", 401);
+                        return;
+                    }
+                    else {
+                        if (!isMatch) {
+                            console.log("Authentication error : password is wrong");
+                            res.send("Authentication error : password is wrong", 401);
+                        }
+                        else {
+			    req.user.hashedpassword = req.body.password;
+			    req.user.save(null);
+			    res.send("save successfully");
+			}
+		    }
+		});
+	}
+    }
+    catch(ex)
+    {
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function changeUserPassword(req, res){
+    try
+    {
+	if(req.body.password)
+	{
+		userModel.findOne({'_id':req.body.userId}).exec(function(err, user){
+		    if(err)
+		    {
+			console.log(err);
+			res.send(err, 500);
+		    }
+		    else if(user){
+				user.hashedpassword = req.body.password;
+				user.save(null);
+				res.send("save successfully");
+		    }
+		});
+	}
+    }
+    catch(ex)
+    {
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+
+function getUserPeriod(req, res){
+    var userId = req.params.userId;
+    console.log("User id is : " + userId);
+    try{
+	userModel.findOne({'_id': userId}).exec(function(err, user){
+	    try{
+		if(err){
+		    res.send(err, 500);
+		}
+		if(!user){		
+		    res.send("user not found", 404);
+		}
+		else{
+		    console.log("retriev user ids");
+		    var result = [];
+		    console.log(user.periods);
+		    if(user.periods){
+			for(var i = 0 ; i < user.periods.length ; i++){		
+			    if(user.periods[i].status == true){		
+				result.push(user.periods[i]);
+			    }
+			}
+		    }
+		    res.json(result);
+		}
+	    }
+	    catch(ex){
+		console.log(ex);
+		res.send(ex, 500);
+	    }
+	});
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+function setUserPeriod(req, res){
+    try
+    {
+	var userId = req.body.userId;
+	var day    = req.body.day;
+	var start  = req.body.begin;
+	var end    = req.body.end;
+	console.log(userId + " : " + day + " : " + start + " : " + end);
+	userModel.findOne({'_id': userId}).exec(function(err, user){
+	    console.log('find user and try to save periods');
+	    try{
+		if(err){
+		    res.send(err, 500);
+		}
+		if(!user){		
+		    res.send("user not found", 404);
+		}
+		else{
+		    var result = [];
+		    if(user.periods){
+			for(var i = 0 ; i < user.periods.length ; i++){		
+			    if(user.periods[i].status == true){		
+				user.periods[i].status = false;
+			    }
+			}
+		    }
+		    console.log("addeding new data");
+		    user.periods.push({ day: day, 
+				begin: start, 
+				end: end,
+				status: true});
+		    console.log("data added");
+		    user.save(null);
+		    res.send("ok");
+		}
+	    }
+	    catch(ex){
+		console.log(ex);
+		res.send(ex, 500);
+	    }
+	});
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+    
+}
+
+function deleteUserPeriods(req, res){
+    try{
+	var userId = req.body.userId;
+	var periodId = req.body.period;
+	if(!userId || !periodId){
+	    res.send("parameters invalid", 404);
+	}
+	else{
+	    userModel.findOne({'_id': userId}).exec(function(err, user){
+		try{
+		    if(err){
+			res.send(err, 500);
+		    }
+		    if(!user){		
+			res.send("user not found", 404);
+		    }
+		    else{
+			var result = [];
+			for(var i = 0 ; i < user.periods.length ; i++){		
+			    if(user.periods[i].status == true && user.periods[i].id == periodId){		
+				periods[i].status = false;
+			    }
+			}
+			user.save(null);
+			res.json(user);
+		    }
+		}
+		catch(ex){
+		    console.log(ex);
+		    res.send(ex, 500);
+		}
+	    });    
+	}
+    }
+    catch(ex){
+	console.log(ex);
+	res.send(ex, 500);
+    }
+}
+
+
 /*
  *   Register user apis
  */
@@ -318,6 +543,9 @@ function getUserActivityCount(req, res){
 router.route('/signout').post(requireAuthentication, signout);
 router.route('/signin').post(signin);
 router.route('/signup').post(signup);
+router.route('/signupAdmin').post(signupAdmin);
+router.route('/changePassword').post(requireAuthentication, changePassword);
+router.route('/changeUserPassword').post(requireAuthentication, changeUserPassword);
 router.route('/userList').get(requireAuthentication, getUserList);
 router.route('/getUserByMail/:email').get(requireAuthentication, getUser);
 router.route('/getUserById').post(requireAuthentication, getUserById);
@@ -326,6 +554,9 @@ router.route('/addRoleToUser').post(requireAuthentication, addRoleToUser);
 router.route('/changeUserStatus').post(requireAuthentication, changeUserStatus);
 router.route('/getUserActivity/:page/:pageSize/:userId').get(getUserActivity);
 router.route('/getUserActivityCount/:userId').get(getUserActivityCount);
+router.route('/getUserPeriod/:userId').get(getUserPeriod);
+router.route('/setUserPeriod').post(setUserPeriod);
+router.route('/deleteUserPeriod').post(deleteUserPeriods);
 module.exports = router;
 module.exports.requireAuthentication = requireAuthentication;
 module.exports.updateUserActivity = updateUserActivity;

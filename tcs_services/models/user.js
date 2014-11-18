@@ -13,6 +13,13 @@ var UserActivity = new Schema({
     activitydesc        : String
 });
 
+var UserPeriod = new Schema({
+    day			: String,
+    begin		: String,
+    end			: String,
+    status		: Boolean
+});
+
 var User = new Schema({
     username            :   {type : String,  unique: true, required : true},
     hashedpassword      : {
@@ -32,7 +39,8 @@ var User = new Schema({
     gender              :   Boolean,
     email               :   {type : String,  unique : true, required : true},
     isaproved           :   Boolean,
-    islockedout         :   Boolean
+    islockedout         :   Boolean,
+    periods		:   [UserPeriod]
 });
 
 
@@ -84,6 +92,23 @@ User.methods.getBrief = function(){
     };
     return result;
 }
+
+
+User.methods.getSummery = function(){
+    var result =  {
+        id      :   this.id, 
+        username : this.username,
+        email : this.email,
+        firstName : this.firstname,
+        lastName : this.lastname,
+        registerDate : this.registerdate,
+        mobileNumber : this.mobileNumber,
+        gender       : this.gender,
+	roles	     : this.roles
+    };
+    return result;
+}
+
 
 User.virtual('userId')
     .get(function () {

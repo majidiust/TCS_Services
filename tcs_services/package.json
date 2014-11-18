@@ -26,6 +26,8 @@
         "node-dir":"*",
         "moment-jalaali":"*",
 	"shelljs":"*",
-	"network":"*"
+	"network":"*",
+	"adm-zip":"*",
+	"walk":"*"
     }
 }

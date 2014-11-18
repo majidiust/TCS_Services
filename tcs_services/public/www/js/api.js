@@ -13,6 +13,10 @@ var lastPage;
 var currentId;
 var lastState;
 var currentProfile;
+var selectedUser;
+var tp = 0 ;
+var cp = 0 ;
+var mp = 0;
 
 function tablefy(tableid) {
     var table = $('#' + tableid);
@@ -87,6 +91,8 @@ function tablefyCustom(tableid) {
         "bDestroy": true,
         "bJQueryUI": true,
         "bProcessing": true,
+//	"bServerSide": true,
+//	"bAjaxSource" : "/salam", 
         "bDeferRender": true,
         "oLanguage": {
             "sProcessing": "درحال پردازش...",
@@ -272,7 +278,7 @@ function userTableInit(tableid) {
                 "fnRender": function (obj) {
                     var sReturn = obj.aData[obj.iDataColumn];
                     //sReturn = '<center><div onclick="openComplexModal(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures">Ø¬Ø²ÛŒÛŒØ§Øª</div></center>';
-                    sReturn = '<center><div onclick="showUserDetails(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures" style="cursor:pointer;">جزییات</div></center>';
+                    sReturn = '<center><div onclick="showUserDetails(' + "'" + sReturn + "'" + ');" class="button compact" style="cursor:pointer;">جزییات</div></center>';
                     console.log(sReturn);
                     return sReturn;
                 }
@@ -281,7 +287,25 @@ function userTableInit(tableid) {
                 "sTitle": "",
                 "fnRender": function (obj) {
                     var sReturn = obj.aData[obj.iDataColumn];
-                    sReturn = '<center><div onclick="changeUserStatus(' + "'" + sReturn + "'" + ');" class="button compact icon-pictures" style="cursor:pointer;">فعال/غیرفعال</div></center>';
+                    sReturn = '<center><div onclick="changeUserStatus(' + "'" + sReturn + "'" + ');" class="button compact" style="cursor:pointer;">وضعیت</div></center>';
+                    console.log(sReturn);
+                    return sReturn;
+                }
+            },
+	    {
+                "sTitle": "",
+                "fnRender": function (obj) {
+                    var sReturn = obj.aData[obj.iDataColumn];
+                    sReturn = '<center><div onclick="showChangeUserPassword(' + "'" + sReturn + "'" + ');" class="button compact" style="cursor:pointer;">کلمه عبور</div></center>';
+                    console.log(sReturn);
+                    return sReturn;
+                }
+            },
+	    {
+                "sTitle": "",
+                "fnRender": function (obj) {
+                    var sReturn = obj.aData[obj.iDataColumn];
+                    sReturn = '<center><div onclick="showUserPeriods(' + "'" + sReturn + "'" + ');" class="button compact" style="cursor:pointer;">زمان</div></center>';
                     console.log(sReturn);
                     return sReturn;
                 }
@@ -365,7 +389,7 @@ function loadPlatedData(pageSize) {
             //alert(result.pageCount);
             count = parseInt(result.pageCount);
             console.log(count);
-            reloadPlatedData(count, pageSize);
+            reloadPlatedData(count, pageSize, count);
             walk(document.body, replaceNumbers);
         },
         error: function () {
@@ -406,7 +430,8 @@ function reloadUnPlatedData(page, pageSize) {
                 var d = "";
                 var correctedPlate = result[i].persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ا یران " + correctedPlate[6] + correctedPlate[7]);
+//                    d = (correctedPlate[6] + correctedPlate[7] +  " ا یران " + correctedPlate[4] + correctedPlate[5] + correctedPlate[3] + correctedPlate[1] + correctedPlate[2]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
 		
@@ -450,7 +475,7 @@ function loadData(pageSize) {
         async: true
     });
 }
-function reloadPlatedData(page, pageSize) {
+function reloadPlatedData(page, pageSize, count) {
     $.ajax({
         type: 'GET',
         url: "/traffic/getPlatedTrafficPage/" + page + "/" + pageSize,
@@ -465,7 +490,8 @@ function reloadPlatedData(page, pageSize) {
                 var d = "";
                 var correctedPlate = result[i].persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+                    //d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
 		var name = "";
@@ -484,9 +510,9 @@ function reloadPlatedData(page, pageSize) {
                 //results.push(newObject);
             }
             if (exist)
-                if (page > 0 && page > count - 20) {
+                if (page > 0 && page > count - 5) {
                     setTimeout(function () {
-                        reloadPlatedData(page - 1, pageSize);
+                        reloadPlatedData(page - 1, pageSize, count);
                     }, 100);
                 }
         },
@@ -510,7 +536,8 @@ function reload(page, pageSize) {
                 var d = "";
                 var correctedPlate = result[i].persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
                 var newObject = [
@@ -653,7 +680,8 @@ function LoadById(id) {
             plate = correctedPlate;
             getProfile();
             if (correctedPlate && correctedPlate.length == 8) {
-                d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                 d = '<div style="direction:rtl">' + d + '</div>';
                 $("#part1").val(correctedPlate[0] + correctedPlate[1]);
                 $("#part2").val(correctedPlate[2]);
@@ -702,7 +730,9 @@ function saveDetails() {
             //alert('saved');
             walk(document.body, replaceNumbers);
         },
-        error: function () {
+        error: function(xhr, ajaxOptions, thrownError) {
+	    if(xhr.status == 500)
+	    alert("شما اجازه اعمال تغیرات در این لحظه را ندارید.");
         },
         async: true
     });
@@ -749,7 +779,8 @@ function getAllRecordsForPlate(page, pageSize) {
                     var d = "";
                     var correctedPlate = result[i].persianPlate2;
                     if (correctedPlate && correctedPlate.length == 8) {
-                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                         d = '<div style="direction:rtl">' + d + '</div>';
                     }
                     var newObject = [
@@ -786,7 +817,8 @@ function reloadoverview() {
                 var d = "";
                 var correctedPlate = result.persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
                 $("#detectedPlate").html(d);
@@ -806,6 +838,8 @@ function reloadoverview() {
 	headers: {token: token},
         dataType: 'json',
         success: function (result) {
+	    tp = parseInt(result);
+calcStatistics();
             $("#totalPlated").html(result);
             walk(document.body, replaceNumbers);
         },
@@ -819,6 +853,8 @@ function reloadoverview() {
         dataType: 'json',
 	headers: {token: token},
         success: function (result) {
+	    mp = parseInt(result);
+calcStatistics();
             $("#manualPlated").html(result);
             walk(document.body, replaceNumbers);
         },
@@ -832,6 +868,8 @@ function reloadoverview() {
         dataType: 'json',
 	headers: {token: token},
         success: function (result) {
+	    cp = parseInt(result);
+ calcStatistics();
 	    console.log(result);
             $("#changedPlate").html(result);
             walk(document.body, replaceNumbers);
@@ -840,6 +878,16 @@ function reloadoverview() {
         },
         async: true
     });
+}
+
+function calcStatistics(){
+    $("#totalAllPlated").html(mp + cp + tp);
+    $("#detectedAndCorrected").html(cp + tp);
+    var plateRate = Math.round(((cp + tp)/ (mp + cp + tp)*100));
+    var correctRate = Math.round(((tp) / (tp+cp))*100);
+    console.log(plateRate + " : " + correctRate);
+    $("#detectionRate").html(plateRate + "%");
+    $("#correctedRate").html(correctRate + "%");
 }
 function loadImageoverview(recordId) {
     $.ajax({
@@ -908,18 +956,25 @@ function saveSettings() {
     });
 }
 function queryByDate() {
-    var fromDay = $("#from_date_day").val();
-    var fromMonth = $("#from_date_month").val();
-    var fromYear = $("#from_date_year").val();
-    var toDay = $("#to_date_day").val();
-    var toMonth = $("#to_date_month").val();
-    var toYear = $("#to_date_year").val();
+    var date1 = $("#pcal1").val();
+    var date2 = $("#pcal2").val();
+    var dates1 = date1.split("/");
+    var dates2 = date2.split("/");
+    console.log(dates1[0] + " : " + dates1[1] + " : " + dates1[2]);
+    console.log(dates2[0] + " : " + dates2[1] + " : " + dates2[2]);
+    var fromDay = dates1[2];
+    var fromMonth = dates1[1];
+    var fromYear = dates1[0];
+    var toDay = dates2[2];
+    var toMonth = dates2[1];
+    var toYear = dates2[0];
     var hasError = false;
     if (!fromDay || !fromMonth || !fromYear || !toYear || !toMonth || !toDay) {
         alert("تاریخ ها مطابقت ندارند");
         hasError = true;
     }
     else {
+	ShowModalWindow('توجه','در حال دریافت داده ها  ....');
         var nimUrl = "/traffic/getTrafficPageByDate/" + fromDay + "/" + fromMonth + "/" + fromYear + "/" + toDay + "/" + toMonth + "/" + toYear + "/";
         $.ajax({
             type: 'GET',
@@ -937,7 +992,7 @@ function queryByDate() {
     }
 }
 function reloadDateQuery(page, nimUrl) {
-    ShowModalWindow('توجه','در حال دریافت داده ها  ....');
+    
     $.ajax({
         type: 'GET',
 	headers: {token: token},
@@ -953,7 +1008,8 @@ function reloadDateQuery(page, nimUrl) {
                 var d = "";
                 var correctedPlate = result[i].persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
                 var newObject = [
@@ -977,6 +1033,7 @@ function reloadDateQuery(page, nimUrl) {
             // }
         },
         error: function () {
+	    CloseModalWindow();
         },
         async: true
     });
@@ -984,7 +1041,7 @@ function reloadDateQuery(page, nimUrl) {
 
 function reloadAllPlateData() {
     $('#plated_traffic_table').dataTable().fnClearTable();
-    loadPlatedData(50);
+    loadPlatedData(100);
 }
 function reloadAllUnPlateData() {
     $('#unplated_traffic_table').dataTable().fnClearTable();
@@ -1041,7 +1098,14 @@ function updatePlate(plate) {
 	headers: {token: token},
         data: { id: currentId, plate: plate },
         success: function (result) {
-        }
+        },
+	error: function(xhr, ajaxOptions, thrownError){
+	    if(xhr.status == 500)
+		    alert("شما اجازه اعمال تغییرات در این لحظه را ندارید.");
+            //alert(xhr.status);
+            //alert(xhr.responseText);
+            //alert(thrownError);
+	}
     });
 }
 
@@ -1084,7 +1148,8 @@ function makeSearch() {
                 var d = "";
                 var correctedPlate = result[i].persianPlate2;
                 if (correctedPlate && correctedPlate.length == 8) {
-                    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+                //    d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                     d = '<div style="direction:rtl">' + d + '</div>';
                 }
                 var newObject = [
@@ -1092,7 +1157,7 @@ function makeSearch() {
                     result[i].time,
                     d,
                     result[i]._id,
-result[i].changeLog
+		    result[i].changeLog
                 ];
                 table.fnAddData(newObject);
                 walk(document.body, replaceNumbers);
@@ -1101,6 +1166,7 @@ result[i].changeLog
         }
     });
 }
+
 function loadCurrentUser() {
     var url = 'http://192.168.1.5:3000/api/getCurrentUser';
     $.ajax({
@@ -1138,7 +1204,9 @@ function getUserList() {
                     result[i].mobileNumber,
                     result[i].isaproved,
                     result[i]._id,
-                    result[i]._id
+                    result[i]._id,
+		    result[i]._id,
+		    result[i]._id
                 ];
                 table.fnAddData(newObject);
                 walk(document.body, replaceNumbers);
@@ -1163,10 +1231,25 @@ function isUserInRole(role) {
 }
 
 function detectACL() {
+
+	$("#adminStatistics").hide();
     if (isUserInRole('admin')) {
+	$("#adminStatistics").show();
         $("#saveProfileBtn").show();
         $("#menu9").show();
         $("#menu4").show();
+	$("deviceSettings").show();
+	$("changedRecords").show();
+	$("manualPlateList").show();
+
+	$("#totalPlated").show();
+	$("#manualPlated").show();
+	$("#changedPlate").show();
+	$("#totalAllPlated").show();
+	$("#detectedAndCorrected").show();
+	$("#detectionRate").show();
+	$("#correctedRate").show();
+	return;
     }
     else if (isUserInRole('editor')) {
         $("#saveProfileBtn").show();
@@ -1178,6 +1261,10 @@ function detectACL() {
         $("#menu4").hide();
         $("#saveProfileBtn").hide();
     }
+
+    $("deviceSettings").hide();
+    $("changedRecords").hide();
+    $("manualPlateList").hide();
 }
 
 function addNewUser() {
@@ -1221,8 +1308,8 @@ function showUserDetails(userId) {
             success: function (result) {
             $('#user_activity_table').dataTable().fnClearTable();
                 ShowUserActivities();
-		var count = result.count / 200 ;
-                reloadUserActivities(0 , 200, count, userId);
+		var count = Math.round(result.count / 200) ;
+                reloadUserActivities(count , 200, count, userId);
                 walk(document.body, replaceNumbers);
             },
             error: function () {
@@ -1252,12 +1339,15 @@ function reloadUserActivities(page, size, count, userId){
                 walk(document.body, replaceNumbers);
             }
 
-	    if(result.length < size - 2 || page >= count - 1)
+	    if(page > 0 && page >= count - 3)
 	    {
+		setTimeout(function(){
+		    reloadUserActivities(page - 1, size, count, userId);
+		}, 200);
 	    }
 	    else 
 	    {
-		reloadUserActivities(page + 1, size, count, userId);
+		
 	    }
         },
         error: function () {
@@ -1285,6 +1375,7 @@ function addUserToRole(role, userId) {
 }
 
 function changeUserStatus(userId) {
+    ShowModalWindow("توجه", "در حال تغییر وضعیت کاربر ...");
     var url = 'http://192.168.1.5:3000/api/changeUserStatus';
     $.ajax({
         type: 'POST',
@@ -1295,10 +1386,12 @@ function changeUserStatus(userId) {
         success: function (result) {
             console.log(result);
             getUserList();
+	    CloseModalWindow();
         },
         error: function () {
             console.log("error in saving role");
             getUserList();
+	    CloseModalWindow();
 
         }});
 }
@@ -1457,7 +1550,9 @@ function showDeviceSettings(){
 	loadDeviceSettings();
     }
     else{
-        console.log('شما مجور این کار را ندارید. لطفا با مدیر سیستم تماس بگیرید.');
+        var msg = 'شما مجور این کار را ندارید. لطفا با مدیر سیستم تماس بگیرید.';
+	alert(msg);
+//	ShowModalCloseButton();
     }
 }
 
@@ -1590,6 +1685,15 @@ function ShowUserActivities() {
 }
 
 
+function showPasswordSetting() {
+    $("div[name=panel]").hide();
+    $("#passwordSetting").show();
+    clearInterval(inter);
+    $("li[name=menu]").removeClass("current");
+    lastState = 26;
+}
+
+
 function ShowSettings() {
 
     showCameraList();
@@ -1636,19 +1740,21 @@ function DoSelfPageAct(url) {
 }
 
 function showManualPlate(){
+    if(isUserInRole('admin')){
     lastState = 25;
     
     $("div[name=panel]").hide();
     $("#manualPlateList").show();
     clearInterval(inter);
     $("li[name=menu]").removeClass("current");
-    
+    ShowModalWindow('توجه', 'در حال دریافت داده ها ... ');
 	$.ajax({
             type: 'GET',
             url: "/traffic/getManualPlated",
             dataType: 'json',
             headers: { token: token },
             success: function (result) {
+		CloseModalWindow();
                 $('#manual_traffic_table').dataTable().fnClearTable();
                 var exist = false;
                 var results = [];
@@ -1673,9 +1779,16 @@ function showManualPlate(){
                 }
             },
             error: function () {
+		CloseModalWindow();
             },
             async: true
         });
+    }
+    else{
+	var msg = "شما مجوز این کار را ندارید. لطفا با مدیر سیستم تماس بگیرید.";
+	alert(msg);
+//	ShowModalCloseButton();
+    }
 }
 
 function showChangeLogs(){
@@ -1699,12 +1812,14 @@ function showChangeLogs(){
 		    var d2 = "";
                     var correctedPlate = result[i].last;
                     if (correctedPlate && correctedPlate.length == 8) {
-                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+//                        d = (correctedPlate[0] + correctedPlate[1] + correctedPlate[2] + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " ایران " + correctedPlate[6] + correctedPlate[7]);
+		    d = (correctedPlate[6] + correctedPlate[7] +   " ایران " + correctedPlate[3] + correctedPlate[4] + correctedPlate[5] + " " + correctedPlate[2] + " "  + correctedPlate[0] + correctedPlate[1]);
                         d = '<div style="direction:rtl">' + d + '</div>';
                     }
 		    var correctedPlate2 = result[i].next;
                     if (correctedPlate2 && correctedPlate2.length == 8) {
-                        d2 = (correctedPlate2[0] + correctedPlate2[1] + correctedPlate2[2] + correctedPlate2[3] + correctedPlate2[4] + correctedPlate2[5] + " ایران " + correctedPlate2[6] + correctedPlate2[7]);
+//                        d2 = (correctedPlate2[0] + correctedPlate2[1] + correctedPlate2[2] + correctedPlate2[3] + correctedPlate2[4] + correctedPlate2[5] + " ایران " + correctedPlate2[6] + correctedPlate2[7]);
+		    d2 = (correctedPlate2[6] + correctedPlate2[7] +   " ایران " + correctedPlate2[3] + correctedPlate2[4] + correctedPlate2[5] + " " + correctedPlate2[2] + " "  + correctedPlate2[0] + correctedPlate2[1]);
                         d2 = '<div style="direction:rtl">' + d2 + '</div>';
                     }
 		    var userName = 'admin';
@@ -1731,16 +1846,20 @@ function returnToDetails(){
 }
 
 function showChangedRecords(){
+    if(isUserInRole("admin")){
+    
     lastState = 30;
     $("div[name=panel]").hide();
     $("#changedRecordList").show();
     clearInterval(inter);
+    ShowModalWindow('توجه','در حال دریافت داده ... ');
 	$.ajax({
             type: 'GET',
             url: "/traffic/getChangedRecords",
             dataType: 'json',
             headers: { token: token },
             success: function (result) {
+		CloseModalWindow();
                 $('#changed_record_table').dataTable().fnClearTable();
                 var exist = false;
                 var results = [];
@@ -1765,7 +1884,147 @@ function showChangedRecords(){
                 }
             },            
 	    error: function () {
+		CloseModalWindow();
             },
             async: true
         });
+    }
+    else{
+	var msg = "شما مجوز این کار را ندارید. لطفا با مدیر سیستم تماس بگیرید.";
+	alert(msg);
+//	ShowModalCloseButton();
+    }
+}
+
+function savePasswordSetting(){
+    var currentPassword = $("#currentPassword").val();
+    var password = $("#newPassword").val();
+    var confirmPassword = $("newPasswordConfirmation").val();
+    console.log(currentPassword + " : " + password + " : " + confirmPassword);
+    $.ajax({
+            type: 'POST',
+            url: "/api/changePassword",
+            dataType: 'json',
+            headers: { token: token },
+	    data : { currentPassword : currentPassword, password : password } ,
+	    success : function(result){
+		console.log(result);
+		window.location = "login.html";
+	    },
+	    error: function(){
+		console.log("error in getting data from the server");
+		window.location = "login.html";
+	    },
+	    async : true
+	});        
+}
+
+function signOut(){
+    $.ajax({
+            type: 'POST',
+            url: "/api/signout",
+            dataType: 'json',
+            headers: { token: token },
+	    success : function(result){
+		console.log(result);
+		localStorage.setItem("token", "");
+		window.location = "login.html";
+	    },
+	    error: function(){
+		console.log("error in getting data from the server");
+		localStorage.setItem("token", "");
+		window.location = "login.html";
+	    },
+	    async : true
+	});        
+}
+
+function showChangeUserPassword(userId){
+    console.log("chnage the password for user id : " + userId);
+    $("div[name=panel]").hide();
+    $("#changeUserPassword").show();
+    clearInterval(inter);
+    $("li[name=menu]").removeClass("current");
+    lastState = 15;
+    selectedUser = userId;
+}
+
+function saveUserPassword(){
+    console.log('Save user password');
+    var password = $("#otherUserPassword").val();
+    var confirmPassword = $("otherUserPasswordConfirmation").val();
+    console.log(password + " : " + confirmPassword);
+    $.ajax({
+            type: 'POST',
+            url: "/api/changeUserPassword",
+            dataType: 'json',
+            headers: { token: token },
+	    data : { userId : selectedUser, password : password } ,
+	    success : function(result){
+		console.log(result);
+		ShowUser();
+	    },
+	    error: function(){
+		console.log("error in getting data from the server");
+		ShowUser();
+	    },
+	    async : true
+	});        
+
+}
+
+function showUserPeriods(userId){
+    selectedUser = userId;
+    $("div[name=panel]").hide();
+    $("#userPeriod").show();
+    clearInterval(inter);
+    console.log(userId);
+    loadUserPeriods();
+}
+
+function loadUserPeriods(){
+    ShowModalWindow('توجه','در حال دریافت داده ... ');
+    $("#userBeginTime").val("");
+    $("#userEndTime").val("");
+    $.ajax({
+	type: 'GET',
+	url: "/api/getUserPeriod/" + selectedUser,
+	dataType: 'json',
+	headers: {token : token},
+	success: function(result){
+	    CloseModalWindow();
+	    console.log(result);
+	    if(result){
+		$("#userBeginTime").val(result[0].begin);
+		$("#userEndTime").val(result[0].end);
+	    }
+	},
+	error:	function(){
+	    console.log("error in getting the data");
+	    CloseModalWindow();
+	}
+    });
+}
+
+function saveUserPeriods(){
+    ShowModalWindow('توجه', 'در حال ارسال اطلاعات به سمت سرور ...');
+    var begin = $("#userBeginTime").val();
+    var end = $("#userEndTime").val();
+    var data = {userId: selectedUser, begin: begin, end: end, day: 'everyday'};
+    console.log(data);
+    $.ajax({
+	type: 'POST',
+	url: "/api/setUserPeriod",
+	dataType: 'json',
+	headers: {token : token},
+	data: data,
+	success: function(result){
+	    CloseModalWindow();
+	    console.log(result);
+	},
+	error:	function(){
+	    CloseModalWindow();
+	    console.log("error in getting the data");
+	}
+    });
 }

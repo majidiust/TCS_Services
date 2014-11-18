@@ -2388,7 +2388,9 @@ li.message-menu {
 			#shortcuts > li.current > a {
 				color: #3399cc;
 			}
-			.shortcut-dashboard	{ background-position: -66px -5px; }
+			.shortcut-dashboard	{ 
+				background-position: -66px -5px;
+			}
 			.shortcut-messages	{ background-position: -66px -75px; }
 			.shortcut-agenda	{ background-position: -66px -145px; }
 			.shortcut-contacts	{ background-position: -66px -215px; }
@@ -2396,6 +2398,10 @@ li.message-menu {
 			.shortcut-stats		{ background-position: -66px -355px; }
 			.shortcut-settings	{ background-position: -66px -425px; }
 			.shortcut-notes		{ background-position: -66px -495px; }
+			.shortcut-plate 
+			{
+			    background-image: url(../img/customIcons/images.png);
+			}
 
 			span.shortcut-dashboard	{ background-position: 1px -5px; }
 			span.shortcut-messages	{ background-position: 1px -75px; }
