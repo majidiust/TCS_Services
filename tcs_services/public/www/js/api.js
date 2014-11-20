@@ -1130,7 +1130,7 @@ function makeSearch() {
     var date = $("#searchDate").val();
     var pl = $("#searchPart1").val() + $("#searchPart2").val() + $("#searchPart3").val() + $("#searchPart5").val();
     //    alert(name + " : "  +  " : " + pl);
-    var url = 'http://192.168.1.5:3000/traffic/searchTraffic/' + pl;
+    var url = '/traffic/searchTraffic/' + pl;
     $.ajax({
         type: 'GET',
         url: url,
@@ -1168,7 +1168,7 @@ function makeSearch() {
 }
 
 function loadCurrentUser() {
-    var url = 'http://192.168.1.5:3000/api/getCurrentUser';
+    var url = '/api/getCurrentUser';
     $.ajax({
         type: 'GET',
         url: url,
@@ -1186,7 +1186,7 @@ function loadCurrentUser() {
 
 function getUserList() {
     console.log(token);
-    var url = 'http://192.168.1.5:3000/api/userList';
+    var url = '/api/userList';
     $.ajax({
         type: 'GET',
         url: url,
@@ -1279,7 +1279,7 @@ function addNewUser() {
         gender: 1
     };
 
-    var url = 'http://192.168.1.5:3000/api/signup';
+    var url = '/api/signup';
     $.ajax({
         type: 'POST',
         url: url,
@@ -1299,7 +1299,7 @@ function addNewUser() {
 }
 
 function showUserDetails(userId) {
-    var url = "http://192.168.1.5:3000/api/getUserActivityCount/" + userId;
+    var url = "/api/getUserActivityCount/" + userId;
     $.ajax({
             type: 'GET',
             url: url,
@@ -1319,7 +1319,7 @@ function showUserDetails(userId) {
 }
 
 function reloadUserActivities(page, size, count, userId){
-    var url = 'http://192.168.1.5:3000/api/getUserActivity/' + page + "/" + size + "/" + userId;
+    var url = '/api/getUserActivity/' + page + "/" + size + "/" + userId;
     $.ajax({
         type: 'GET',
         url: url,
@@ -1359,7 +1359,7 @@ function reloadUserActivities(page, size, count, userId){
 
 
 function addUserToRole(role, userId) {
-    var url = 'http://192.168.1.5:3000/api/addRoleToUser';
+    var url = '/api/addRoleToUser';
     $.ajax({
         type: 'POST',
         data: { rolename: role, userId: userId },
@@ -1376,7 +1376,7 @@ function addUserToRole(role, userId) {
 
 function changeUserStatus(userId) {
     ShowModalWindow("توجه", "در حال تغییر وضعیت کاربر ...");
-    var url = 'http://192.168.1.5:3000/api/changeUserStatus';
+    var url = '/api/changeUserStatus';
     $.ajax({
         type: 'POST',
         data: { userId: userId },
@@ -1398,7 +1398,7 @@ function changeUserStatus(userId) {
 
 function reloadAllCameras() {
     console.log(token);
-    var url = 'http://192.168.1.5:3000/camera/getListOfCameras';
+    var url = '/camera/getListOfCameras';
     $.ajax({
         type: 'GET',
         url: url,
@@ -1437,7 +1437,7 @@ function addNewCamera() {
         Role: $("#newCameraRole").val()
     };
 
-    var url = 'http://192.168.1.5:3000/camera/addNewCamera';
+    var url = '/camera/addNewCamera';
     $.ajax({
         type: 'POST',
         data: newCamera,
@@ -1454,7 +1454,7 @@ function addNewCamera() {
 }
 
 function changeCameraStatus(cameraId) {
-    var url = 'http://192.168.1.5:3000/camera/changeCameraStatus';
+    var url = '/camera/changeCameraStatus';
     $.ajax({
         type: 'POST',
         data: { cameraId: cameraId },
@@ -1472,7 +1472,7 @@ function changeCameraStatus(cameraId) {
 }
 
 function deleteCamera(cameraId) {
-    var url = 'http://192.168.1.5:3000/camera/deleteCamera';
+    var url = '/camera/deleteCamera';
     $.ajax({
         type: 'POST',
         data: { cameraId: cameraId },
@@ -1489,7 +1489,7 @@ function deleteCamera(cameraId) {
 }
 
 function resetDevice() {
-    var url = 'http://192.168.1.5:3000/settings/resetServer';
+    var url = '/settings/resetServer';
     $.ajax({
         type: 'GET',
         url: url,
@@ -1512,7 +1512,7 @@ function saveNetworkSettings() {
     if (ip != "" && pattern.test(ip)) {
         if (mask != "" && pattern.test(mask)) {
             if (gateway != "" && pattern.test(gateway)) {
-                var url = 'http://192.168.1.5:3000/settings/setNetworkSettings';
+                var url = '/settings/setNetworkSettings';
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -1562,7 +1562,7 @@ function loadDeviceSettings(){
     var ip = $("#settingsIP").val();
     var mask = $("#settingsNetMask").val();
     var gateway = $("#settingsGateway").val();
-    var url = "http://192.168.1.5:3000/settings/getCurrentNetwork";
+    var url = "/settings/getCurrentNetwork";
     $.ajax({
         type: 'GET',
         url: url,
