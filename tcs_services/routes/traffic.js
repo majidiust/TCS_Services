@@ -452,12 +452,19 @@ function saveProfile(req, res){
 		    }
 		    var msg =  " ذخیزه سازی پروفایل برای پلاک  "  + pl + " شناسه رکورد " + currentId + " مورخ  " + tr.date + " ساعت " + tr.time;
 		    console.log(msg);
-		    AuthControl.updateUserActivity(msg, req.user);
+		   
 		    profileModel.findOne({'plate':plate}, function(err, prof){
 		    if(prof){
+			if(prof.firstName != firstName)
+				msg += "تغییر نام کوچک از "  +  prof.firstName +  " به  "  + firstName + " ----- " ;
+			if(prof.lastName != lastName)
+				msg += "تغییر نام خانوادگی از "  +  prof.lastName +  " به  "  + lastName + " ----- " ;
+			if(prof.nationalityCode != nationalityCode)
+				msg += "تغییر کد ملی از "  +  prof.nationalityCode +  " به  "  + nationalityCode + " ----- " ;
 			prof.firstName= firstName;
     			prof.lastName= lastName;
     			prof.nationalityCode= nationalityCode;
+			AuthControl.updateUserActivity(msg, req.user);
 			prof.save(null);
 		        trafficModel.find({'persianPlate2': plate}, function(err, traffics){
 			    if(traffics){
@@ -470,6 +477,7 @@ function saveProfile(req, res){
 			});
 		    }
 		    else{
+			msg += " ایجاد پروفایل برای کاربر با اطلاعات  " +  " نام : " + firstName + " نام خانوادگی : " + lastName + " کد ملی : " + nationalityCode + " ------- " ;
 			var profile = new profileModel({
     			    firstName: firstName,
     			    lastName: lastName,
@@ -477,6 +485,7 @@ function saveProfile(req, res){
     			    plate: plate
 			});
 			profile.save(null);
+			AuthControl.updateUserActivity(msg, req.user);
 			trafficModel.findOne({'_id':currentId}, function(err, traffic){
 			    if(traffic){
 				traffic.profile = profile.id;
@@ -577,7 +586,8 @@ function updatePlate(req, res){
 		if(hasAccess == true){
 		    var last = traffic.persianPlate2;
 		    var next = req.body.plate;
-		    AuthControl.updateUserActivity("تغییر پلاک از "  + last +  " به  " + next  , req.user);
+		    if(last != next)
+			    AuthControl.updateUserActivity("تغییر پلاک از "  + last +  " به  " + next  , req.user);
             	    traffic.persianPlate2 = req.body.plate;
 		    if(last != next)
 			traffic.changeLog.push({userName: req.user.username, userId: req.user.id, last : last, next : next});

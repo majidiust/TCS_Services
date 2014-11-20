@@ -552,7 +552,7 @@ function reload(page, pageSize) {
                 //results.push(newObject);
             }
             if (true)//exist)
-                if (page > count - 10) {
+                if (page > count - 10 && page >= 1) {
                     setTimeout(function () {
                         reload(page - 1, pageSize);
                     }, 100);
@@ -825,7 +825,15 @@ function reloadoverview() {
             }
             else
                 $("#detectedPlate").html("-");
-            loadImageoverview(result._id);
+		if(result.detectedImage)
+		{
+		    var sss = result.detectedImage.split("/");
+		    console.log(result._id + '/' + sss[sss.length - 1]);
+		    $("#lastTrafficImage").prop("src", result._id + '/' + sss[sss.length - 1]);
+		}
+	        else{
+        		loadImageoverview(result._id);
+		}
             walk(document.body, replaceNumbers);
         },
         error: function () {
