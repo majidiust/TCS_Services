@@ -20,7 +20,8 @@ var mp = 0;
 
 function tablefy(tableid) {
     var table = $('#' + tableid);
-    table.dataTable({
+    table.
+    dataTable({
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
 	    if(aData[4])
 	    {
@@ -75,6 +76,14 @@ function tablefy(tableid) {
             }
         ]
     });
+    table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 function tablefyCustom(tableid) {
@@ -139,6 +148,14 @@ function tablefyCustom(tableid) {
             }
         ]
     });
+    table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 
@@ -185,6 +202,14 @@ function initChangeLogTable(tableid) {
             }
         ]
     });
+table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 function userActivityInit(tableid) {
@@ -227,6 +252,14 @@ function userActivityInit(tableid) {
             }
         ]
     });
+table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 function userTableInit(tableid) {
@@ -291,7 +324,8 @@ function userTableInit(tableid) {
                     console.log(sReturn);
                     return sReturn;
                 }
-            },
+            }
+,
 	    {
                 "sTitle": "",
                 "fnRender": function (obj) {
@@ -312,6 +346,14 @@ function userTableInit(tableid) {
             }
         ]
     });
+table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 
@@ -377,6 +419,14 @@ function cameraTableInit(tableid) {
             }
         ]
     });
+table.on('order.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('page.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('draw.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+}).
+    on('search.dt', function(){console.log('table event');walk(document.body, replaceNumbers);
+});
 }
 
 function loadPlatedData(pageSize) {
@@ -502,7 +552,8 @@ function reloadPlatedData(page, pageSize, count) {
                     result[i].time,
                     d,
 		    name,
-                    result[i]._id,
+                    result[i]._id
+,
 		    result[i].changeLog
                 ];
                 table.fnAddData(newObject);
@@ -571,8 +622,27 @@ function loadImage(recordId) {
         dataType: 'json',
 	headers: {token: token},
         success: function (result) {
+	//$("#detailsGallery").each(function(){
+	//		var elem = $(this);
+	//		elem.remove();
+	//	});
             images = result;
+$("#albumTab").html("");
             $("#DetailsImage").prop("src", recordId + '/' + result[0]);
+		var con = '<ul class="gallery" id="detailsGallery">';
+	for(var i = 0 ; i < images.length ; i++ ){
+   		var el = '<li><a href="javascript:void(0);">';
+		el += '<img class="framed" src="' + recordId + '/' + images[i] + '" onclick="showImageDialog(' + "'" + recordId + '/' + result[i] + "'" + ')">';
+                el += '</a></li>';
+		con += el;
+
+		}	
+
+		con += "</ul>";
+                  		$("#albumTab").html(con);
+		console.log(con);
+//		$("#detailsGallery").listview("refresh");
+
         },
         error: function () {
         },
@@ -631,6 +701,41 @@ function openComplexModal(recordId) {
         async: true
     });
 }
+
+function showImageDialog(imageUrl) {
+  
+            $.modal({
+                content: '<div  style="width:100%"><img src="' + imageUrl + '" width="100%"/> </div>',
+                title: 'تصویر',
+                width: 600,
+                scrolling: true,
+                actions: {
+                    'بستن': {
+                        color: 'red',
+                        click: function (win) {
+                            win.closeModal();
+                        }
+                    },
+                    'مرکز': {
+                        color: 'green',
+                        click: function (win) {
+                            win.centerModal(true);
+                        }
+                    }
+                },
+                contentBg: false,
+                buttons: {
+                    'بستن': {
+                        classes: 'huge blue-gradient glossy full-width kaveh',
+                        click: function (win) {
+                            win.closeModal();
+                        }
+                    }
+                },
+                buttonsLowPadding: true
+            });
+}
+
 function getQueryStrings() {
     var assoc = {};
     var decode = function (s) {
@@ -674,7 +779,11 @@ function LoadById(id) {
             $("#tableHolder").hide();
             $("#queryTableHolder").hide();
             $("#details").show();
+	    $("#trafficDesc").html("");
+	    $("#trafficDesc").html(result.desc);
             var results = [];
+
+
             var d = "";
             var correctedPlate = result.persianPlate2;
             plate = correctedPlate;
@@ -716,6 +825,35 @@ function nextImage() {
         index = 0;
     $("#DetailsImage").prop("src", recordI + '/' + images[index]);
 }
+
+function previousImage(){
+    index--;
+    if (index < 0)
+        index = images.length - 1;
+    $("#DetailsImage").prop("src", recordI + '/' + images[index]);
+
+}
+
+function saveDesc(){
+	var desc = $("#trafficDesc").val();
+    	$.ajax({
+        	type: 'POST',
+	        url: "/traffic/saveTrafficDesc",
+	        dataType: 'json',
+		headers: {token: token},
+		data : {trafficId : currentId, desc: desc},
+	        success: function (result) {
+	            alert('با موفقیت ذخیره گردید.');
+	           
+	        },
+	        error: function(xhr, ajaxOptions, thrownError) {
+		    if(xhr.status == 500)
+		    	alert("شما اجازه اعمال تغیرات در این لحظه را ندارید.");
+	        },
+	        async: true
+	    });
+}
+
 function saveDetails() {
     var firstName = $("#firstName").val();
     var lastName = $("#lastName").val();
@@ -1164,7 +1302,8 @@ function makeSearch() {
                     result[i].date,
                     result[i].time,
                     d,
-                    result[i]._id,
+                    result[i]._id
+,
 		    result[i].changeLog
                 ];
                 table.fnAddData(newObject);
@@ -1212,7 +1351,8 @@ function getUserList() {
                     result[i].mobileNumber,
                     result[i].isaproved,
                     result[i]._id,
-                    result[i]._id,
+                    result[i]._id
+,
 		    result[i]._id,
 		    result[i]._id
                 ];

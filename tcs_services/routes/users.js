@@ -304,9 +304,10 @@ function getUserActivity(req, res){
 		//{
 		//    ii = user.activities.length;	
 		//}
-		for(var i = 0; i < pageSize ; i++){
+		for(var i = pageSize - 1; i >= 1 ; i--){
 		    if(pageNumber*pageSize + i < users.activities.length){
 			var dd = users.activities[i + pageNumber*pageSize];
+			console.log((i + pageNumber*pageSize));
 //			console.log(dd.activitydate);
 			dd.activitydate.setHours(dd.activitydate.getHours() + 3);
 			dd.activitydate.setMinutes(dd.activitydate.getMinutes() + 30);
@@ -320,7 +321,7 @@ function getUserActivity(req, res){
 			dd.activitydate = ddd;
 			result.push({_id: dd.id , activityname: dd.activityname, activitydate : ddd} );
 		    }
-		    else break;
+//		    else break;
 		}
 		res.json(result);
 	    }

@@ -549,6 +549,35 @@ function getTrafficPageByDate(req, res){
     }
 }
 
+function saveTrafficDesc(req, res){
+	try{
+		var trafficId = req.body.trafficId;
+		var userId    = req.user.id;
+		var desc = req.body.desc;
+		if(!desc)
+			res.send("", 404);
+		else
+		{
+			trafficModel.findOne({'_id':trafficId}, function(err, traffic){
+				if(err){
+					console.log(err);
+					res.send(err, 500);
+				}
+				else if(traffic){	
+					traffic.desc = 	desc;
+					traffic.save(null);
+	      			        AuthControl.updateUserActivity("تغییر توضیحات برای "  + traffic.id + " , " + traffic.persianPlate2 +  " به  " + desc , req.user);
+res.send("ok");
+				}
+			});
+		}
+	}
+	catch(ex){
+		console.log(ex);
+		res.send(ex, 500);
+	}
+}
+
 function updatePlate(req, res){
     try{
         console.log(req.body.id + " : " + req.body.plate);
@@ -785,6 +814,7 @@ router.route('/getPlatedTrafficPage/:pageNumber/:pageSize').get(AuthControl.requ
 router.route('/getUnPlatedTrafficPage/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getUnPlatedTrafficPage);
 router.route('/getTrafficPageByPlate/:pageNumber/:pageSize/:plate').get(AuthControl.requireAuthentication, getTrafficPageByPlate);
 router.route('/saveProfile/:firstName/:lastName/:nationalityCode/:plate/:currentId').get(AuthControl.requireAuthentication, saveProfile);
+router.route('/saveTrafficDesc').post(AuthControl.requireAuthentication, saveTrafficDesc);
 router.route('/getTrafficPageByDate/:fromDay/:fromMonth/:fromYear/:toDay/:toMonth/:toYear/:pageNumber/:pageSize').get(AuthControl.requireAuthentication, getTrafficPageByDate);
 router.route('/getProfile/:plate').get(AuthControl.requireAuthentication, getProfile);
 router.route('/getLastTraffic').get(AuthControl.requireAuthentication, getLastTraffic);

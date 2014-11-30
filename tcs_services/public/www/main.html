@@ -164,7 +164,8 @@
                                 <hr/>
                             </td>
                         </tr>
-			</table>
+
+			</table>
 			<table style="width:90%;direction:rtl;line-height:30px;" id="adminStatistics">
 			
                         <tr>
@@ -570,7 +571,7 @@
 </div>
 <div class="with-padding" id="details" name="panel" style="display: none;">
     <div class="columns">
-        <div class="box-layout four-columns twelve-columns-tablet" style="height:550px;">
+        <div class="box-layout four-columns twelve-columns-tablet" style="height:500px;">
             <p style="text-align:center;margin-top:10px;">
                 اطلاعات تردد
             </p>
@@ -660,22 +661,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="text-align:center;width:50%">
-                            <button class="button red-gradient"
-                                    style="font-family: Tahoma; font-size: 10px; width: 80%;" onclick="nextImage();">
-                                تصویر بعدی
-                            </button>
-                        </td>
-
-                        <td style="text-align:center;width:50%">
-                            <button class="button blue-gradient"
-                                    style="font-family: Tahoma; font-size: 10px; width: 80%;"
-                                    onclick="getAllRecordsForPlate(0, 500);">
-                                تمامی ترددها
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
                         <td colaspan="2">
                             <hr/>
                         </td>
@@ -702,11 +687,19 @@
                         </td>
                     </tr>
 		    <tr>
-                        <td style="text-align:center;width:50%" colspan="2">
+                        <td style="text-align:center;width:50%">
                             <button class="button black-gradient"
                                     style="font-family: Tahoma; font-size: 12px; width: 80%;"
                                     onclick="showChangeLogs();">
                                 مشاهده تغییرات
+                            </button>
+                        </td>
+
+			<td style="text-align:center;width:50%">
+                            <button class="button blue-gradient"
+                                    style="font-family: Tahoma; font-size: 10px; width: 80%;"
+                                    onclick="getAllRecordsForPlate(0, 500);">
+                                تمامی ترددها
                             </button>
                         </td>
                     </tr>
@@ -737,13 +730,89 @@
             </center>
         </div>
 
-        <div class="box-layout eight-columns twelve-columns-tablet" style="height:450px;margin-top:50px;">
-            <img id="DetailsImage" style="cursor: pointer;" width="100%" height="100%" style="margin-bottm:10px;"
-                 onclick="ShowImageInNewTab();"/>
+        <div class="eight-columns twelve-columns-tablet" style="height:450px;margin-top:50px;">
+		<div class="side-tabs on-right same-height" id="detailtTabController" style="height:450px;">
+			<ul class="tabs" style="float:right;">
+				<li class="active"><a href="#imgTab">تصویر</a></li>
+				<li><a href="#detailsTab">توضیحات</a></li>
+				<li><a href="#albumTab">آلبوم</a></li>
+			</ul>
+			<div class="tabs-content"  style="height:400px;">
+				<div id="imgTab" class="with-padding">
+					<table>
+						<tr>
+							<td colspan="2">		        		
+								<img id="DetailsImage" style="cursor: pointer;" width="100%" onclick="ShowImageInNewTab();"/>
+							</td>
+						</tr>
+	<tr>
+		<td colspan="2">
+			<hr/>
+		</td>
+	</tr>
+<tr>
+                        <td style="text-align:center;width:50%">
+                            <button class="button red-gradient"
+                                    style="font-family: Tahoma; font-size: 14px; width: 80%;" onclick="nextImage();">
+                                تصویر بعدی
+                            </button>
+                        </td>
+			<td style="text-align:center;width:50%">
+                            <button class="button orange-gradient"
+                                    style="font-family: Tahoma; font-size: 14px; width: 80%;" onclick="previousImage();">
+                                تصویر قبلی
+                            </button>
+                        </td>
+
+                        
+                    </tr>
+					</table>
+				</div>
+				<div id="detailsTab" class="with-padding">
+					<div class="six-columns six-columns-tablet twelve-columns-mobile" style="text-align: right;width:100%;">
+				            <fieldset class="fieldset" style="direction: rtl;font-family: tahoma; font-style: normal; font-size: 15px;">
+                <legend class="legend">توضیحات</legend>
+                <table style="width:100%;height:250px;">
+		<tr>
+			<td colspan="2">
+                            <label for="input-3" class="label"> توضیحات</label>
+			</td>
+		</tr>
+                    <tr>
+                       	<td width="10%">
+				&nbsp;
+			</td>
+                        <td >
+                          	<textarea rows="12" cols="50" style="margin-top:10px;text-align:right;direction:rtl;" id="trafficDesc">
+				</textarea>
+                        </td>
+                    </tr>
+			<tr><td colspan="2"><hr/></td>			</tr>
+                
+                    <tr>
+                        <td colspan="2">
+                            <div class="button-height">
+                                <button onclick="saveDesc();" type="submit" class="button blue-gradient"
+                                        style="font-family: tahoma, verdana, sans-serif">
+                                    اعمال تغیرات
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
         </div>
 
-    </div>
+				</div>
+				<div id="albumTab" class="with-padding">
+ 					
 
+              
+				</div>
+			</div>
+		</div>
+        </div>
+    </div>
 </div>
 <div class="with-padding" id="queryTableHolder" name="panel" style="display: none;">
 
@@ -1066,7 +1135,8 @@
                         </td>
                         <td>
                             <table style="width:100%;">
-                                <tr>                                    
+                                <tr>
+                                    
                                     
                                     <td style="width:20%"><input id="searchPart5" style="width:100%" type="text"/></td>
 <td style="width:20%"><input id="searchPart4" style="width:100%" type="text"
@@ -1078,7 +1148,8 @@
                             </table>
 			    <hr/>
                             <table style="width:100%;">
-                                <tr>                                    
+                                <tr>
+                                    
                                     <td style="width:20%"> 66 </td>
 				    <td style="width:20%"> ایران </td>
 				    <td style="width:20%"> 345 </td>
@@ -1203,7 +1274,8 @@
         بی پلاک</a></li>
     <li id="menu7" name="menu"><a onclick="LoadSearch();" class="shortcut-medias" title="جستجو">جستجو</a></li>
 <!--    <li id="menu3" name="menu"><a onclick="ShowQueryByDate();" class="shortcut-contacts" title="گزارش گیری">گزارش
-        گیری</a></li> -->
+        گیری</a></li>
+ -->
     <li id="menu4" name="menu"><a onclick="ShowSettings();" class="shortcut-settings" title="تنظیمات">تنظیمات</a></li>
     <li id="menu9" name="menu"><a onclick="ShowUser();" class="shortcut-contacts" title="مدیریت کاربران">مدیریت
         کاربران</a></li>
@@ -1234,7 +1306,8 @@
 	    <li onclick="showChangedRecords();" id="changedRecords" style="cursor: pointer;" title="پلاک های تغییر داده شده"><span class="icon-inbox"></span></li>
 	    <li onclick="showManualPlate();" id="manualPlateList"><span class="icon-calendar" title="پلاک های وارد شده"></span></li>
         </ul>
-	
+
+	
         <section class="navigable" >
 	
         <ul class="big-menu">
@@ -1291,7 +1364,7 @@
 <script src="js/developr.progress-slider.js"></script>
 <script src="js/developr.tooltip.js"></script>
 <script src="js/developr.content-panel.js"></script>
-
+<script src="js/developr.tabs.js"></script>
 <!-- Plugins -->
 <script src="js/libs/jquery.tablesorter.min.js"></script>
 <script src="js/libs/DataTables/jquery.dataTables.min.js"></script>

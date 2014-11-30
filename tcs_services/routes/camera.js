@@ -25,6 +25,7 @@ function getListOfCameras(req, res){
                 console.log(err);
             }
             else{
+         	    AuthControl.updateUserActivity("مشاهده لیست دوربین ها", req.user);
                 res.send(cameras);
             }
         });
@@ -52,7 +53,10 @@ function addNewCamera(req, res){
             if (err)
                 res.send(err, 401);
             else
+		{
+         	    AuthControl.updateUserActivity("افزودن دوربین جدید" + camera, req.user);
                 res.json({message: 'camera added to database successfully', cameraId: camera.id});
+		}
         });
     }
     catch(ex){
@@ -69,6 +73,8 @@ function changeCameraStatus(req, res){
                res.send(err, 500);
            }
            else if(camera){
+		var msg = " تغییر وضعیت دوربین با شناسه  " + req.body.cameraId + " به " +  ( camera.Status ?   "غیر فعال" : "فعال" );
+               AuthControl.updateUserActivity(msg, req.user);
                camera.Status = !camera.Status;
                camera.save(null);
                res.send("ok");
@@ -92,6 +98,7 @@ function removeCamera(req, res){
                 res.send(err, 500);
             }
             else{
+               AuthControl.updateUserActivity(" حذف دوربین با شناسه  " + req.body.cameraId, req.user);
                 res.send("ok");
             }
         });
@@ -103,8 +110,8 @@ function removeCamera(req, res){
 }
 
 module.exports = router;
-router.route('/getListOfCameras').get(getListOfCameras);
-router.route('/addNewCamera').post(addNewCamera);
-router.route('/changeCameraStatus').post(changeCameraStatus);
-router.route('/deleteCamera').post(removeCamera);
+router.route('/getListOfCameras').get(AuthControl.requireAuthentication, getListOfCameras);
+router.route('/addNewCamera').post(AuthControl.requireAuthentication, addNewCamera);
+router.route('/changeCameraStatus').post(AuthControl.requireAuthentication, changeCameraStatus);
+router.route('/deleteCamera').post(AuthControl.requireAuthentication, removeCamera);
 

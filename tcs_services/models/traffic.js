@@ -21,6 +21,7 @@ var TrafficSchema = new mongoose.Schema({
     persianPlate1: {type: String},
     persianPlate2: {type: String},
     detectedImage: {type: String},
+    desc : {type: String},
     profile : {type:mongoose.Schema.ObjectId, ref:'profile'},
     changeLog : [ChangeSchema]
 }, { collection: 'traffic' });
